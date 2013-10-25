@@ -148,7 +148,7 @@ class FunctionExpression(expression.Expression):
 		target_function = target[self.function] if isinstance(target, dict) else getattr(target, self.function)
 		arguments = map(lambda arg: arg.expressionValueWithObject(object, context=context), self.arguments)
 
-		return target_function(*arguments)
+		return target_function(arguments)
 
 	def _expressionWithSubstitutionVariables(self, variables):
 		operand = self.operand._expressionWithSubstitutionVariables(variables)
