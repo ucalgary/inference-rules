@@ -17,10 +17,10 @@ _BuiltInFunctions = {
 	'first:'           : lambda params: params[0],
 	'last:'            : lambda params: params[-1],
 	'fromObject:index:': lambda object, index: object[index],
-	'add:to:'          : lambda n, m: n + m,
-	'from:subtract:'   : lambda n, m: n - m,
-	'multiply:by:'     : lambda n, m: n * m,
-	'divide:by:'       : lambda n, m: n / m,
+	'add:to:'          : lambda (n, m): n + m,
+	'from:subtract:'   : lambda (n, m): n - m,
+	'multiply:by:'     : lambda (n, m): n * m,
+	'divide:by:'       : lambda (n, m): n / m,
 	'sqrt:'            : math.sqrt,
 	'raise:toPower:'   : math.pow,
 	'abs:'             : math.fabs,
@@ -28,9 +28,9 @@ _BuiltInFunctions = {
 	'ln:'              : math.log10,
 	'exp:'             : math.exp,
 	'ceiling:'         : math.ceil,
-	'random:'          : lambda num: random.randint(0, num),
-	'modulus:by:'      : lambda n, m: n % m,
-	'chs'              : lambda num: -num,
+	'random:'          : lambda (num,): random.randint(0, num),
+	'modulus:by:'      : lambda (n, m): n % m,
+	'chs'              : lambda (num,): -num,
 
 	'valueForKeyPath:' : lambda object, keyPath: kvc.valueForKeyPath(object, keyPath)
 }
