@@ -119,11 +119,11 @@ def predicateWithValue(value):
 	pass
 
 def andPredicateWithSubpredicates(subpredicates):
-	pass
+	return CompoundPredicate(subpredicates, type=CompoundPredicateType.And)
 
 def notPredicateWithSubpredicate(subpredicate):
-	pass
+	return CompoundPredicate((subpredicate,), type=CompoundPredicateType.Not)
 
 def orPredicateWithSubpredicates(subpredicates):
-	pass
+	return CompoundPredicate(subpredicates, type=CompoundPredicateType.Or)
 
