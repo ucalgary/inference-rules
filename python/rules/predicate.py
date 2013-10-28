@@ -110,13 +110,30 @@ class CompoundPredicate(Predicate):
 	def evaluateWithObject(self, obj):
 		return self._operator.evaluatePredicatesWithObject(self.subpredicates, obj)
 
+class ValuePredicate(Predicate):
+
+	def __init__(self, value):
+		self._value = value
+
+	@property
+	def value(self):
+		return self._value
+
+	# Evaluating
+
+	def evaluateWithObject(self, obj):
+		return self.value
+
+TruePredicate = ValuePredicate(True)
+FalsePredicate = ValuePredicate(False)
+
 # Creation functions
 
 def predicateWithFormat(format, **args):
 	pass
 
 def predicateWithValue(value):
-	pass
+	return TruePredicate if value else FalsePredicate
 
 def andPredicateWithSubpredicates(subpredicates):
 	return CompoundPredicate(subpredicates, type=CompoundPredicateType.And)
