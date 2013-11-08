@@ -34,9 +34,9 @@ class Scanner(object):
 
 	@scanLocation.setter
 	def scanLocation(self, location):
-		if location > len(self.string)
+		if location > len(self.string):
 			location = len(self.string)
-		elif location < 0
+		elif location < 0:
 			location = 0
 
 	def scanCharactersFromSet(self, scanSet):
@@ -52,7 +52,7 @@ class Scanner(object):
 		current = self.scanLocation
 		result = None
 
-		while current < len(self.string)
+		while current < len(self.string):
 			c = self.string[current]
 
 			if (c in scanSet) == stop:
@@ -63,9 +63,9 @@ class Scanner(object):
 					result = ''
 				result += c
 
-			current++
+			current += 1
 
-		if result
+		if result:
 			self.scanLocation = current
 
 		return result
@@ -78,7 +78,7 @@ class Scanner(object):
 		while current < len(string):
 			if string[current] in toSkip:
 				break
-			current++
+			current += 1
 
 		self.scanLocation = current
 
@@ -89,7 +89,7 @@ class Scanner(object):
 			return None
 
 		currentStr = self.string[self.scanLocation:]
-		if (self.caseSensitive and currentStr != s) || (!self.caseSensitive and (currentStr.lower() != s.lower())):
+		if (self.caseSensitive and currentStr != s) or (not self.caseSensitive and (currentStr.lower() != s.lower())):
 			return None
 		else:
 			self.scanLocation += s.length
@@ -100,15 +100,15 @@ class Scanner(object):
 		string = self.string
 		captured = nil
 
-		while current < len(string)
+		while current < len(string):
 			currentStr = string[current:]
-			if currentStr == s or (!self.caseSensitive and currentStr.lower() == string.lower()):
+			if currentStr == s or (not self.caseSensitive and currentStr.lower() == string.lower()):
 				break
 
 			if not captured:
 				captured = ''
 			captured += string[current]
-			current++
+			current += 1
 
 		if captured:
 			self.scanLocation = current
@@ -138,7 +138,7 @@ class Scanner(object):
 		loc += len(str(f))
 		i = 0
 		while not math.isnan(float(string[loc + i :])):
-			i++
+			i += 1
 
 		self.scanLocation = loc + i
 
