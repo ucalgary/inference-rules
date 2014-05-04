@@ -215,7 +215,7 @@ class SetExpression(Expression):
 		expressionFunctionName = self.expressionFunctionName()
 		expressionFunction = getattr(leftValue, expressionFunctionName)
 
-		return expressionFunction(leftValue, rightValue)
+		return expressionFunction(rightValue)
 
 class FunctionExpression(Expression):
 
