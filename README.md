@@ -18,13 +18,13 @@ X is meant to operate like the D2W Rule Engine, but with Core Data control class
 {
   'numberOfResultsPerPage': 20,
   'nextPageIconName': 'next.png',
-  'pageTitleFormat': 'Search Results Page %i of %i'
+  'paginationText': 'Page %i of %i'
 }
 ```
 
-A web application can determine how many results to show per page by querying the dictionary for the `numberOfResultsPagePage` key. Each key-value pair in this dictionary contains simple bits of business logic that can feed into an application.
+A web application can determine how many results to show per page by querying the dictionary for the `numberOfResultsPagePage` key. Each key-value pair in this dictionary contains simple bits of business logic that feed into an application.
 
-A rule engine with key-value inferences expands on this idea by allowing each key to have more than one possible value, where each value contains criteria of when it applies. Suppose the `numberResultsPerPage` could vary depending on the type of user that was viewing the page.
+A rule engine with key-value inferences expands on this idea by allowing each key to have more than one possible value, with each value containing the criteria of when it applies. Suppose the `numberResultsPerPage` could vary depending on the type of user that was viewing the page.
 
 ```
 for `numberOfResultsPerPage`
