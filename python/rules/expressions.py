@@ -78,16 +78,16 @@ class Expression(object):
 		return AggregateExpression(collection)
 
 	@staticmethod
-	def expressionForUnionSet(left, right):
-		return SetExpression(ExpressionType.UnionSet, leftSet, rightSet)
+	def expressionForUnionSet(leftExpression, rightExpression):
+		return SetExpression(ExpressionType.UnionSet, leftExpression, rightExpression)
 
 	@staticmethod
-	def expressionForIntersectSet(left, right):
-		return SetExpression(ExpressionType.IntersectSet, leftSet, rightSet)
+	def expressionForIntersectSet(leftExpression, rightExpression):
+		return SetExpression(ExpressionType.IntersectSet, leftExpression, rightExpression)
 
 	@staticmethod
-	def expressionForMinusSet(left, right):
-		return SetExpression(ExpressionType.MinusSet, leftSet, rightSet)
+	def expressionForMinusSet(leftExpression, rightExpression):
+		return SetExpression(ExpressionType.MinusSet, leftExpression, rightExpression)
 
 	# Creating a Subquery
 
