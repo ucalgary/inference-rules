@@ -41,7 +41,7 @@ The `then` portion is the action to take if the condition is true. In a key-valu
 
 ### Conditions (left-hand side)
 
-The D2W Rule Engine used [EOQualifier](https://developer.apple.com/legacy/library/documentation/LegacyTechnologies/WebObjects/WebObjects_5/EOControlRef/Java/Classes/EOQualifier.html) and [Assignment](https://developer.apple.com/legacy/library/documentation/LegacyTechnologies/WebObjects/WebObjects_5/DirectToWebRef/Java/Classes/Assignment.html) classes to describe rules. X rules are based on [NSPredicate](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSPredicate_Class/Reference/NSPredicate.html) and [NSExpression](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSExpression_Class/Reference/NSExpression.html#//apple_ref/occ/cl/NSExpression) classes.
+
 
 ### Values (right-hand side)
 
@@ -58,6 +58,8 @@ Predicate {
 }
 
 ## Differences from Direct To Web
+
+The D2W Rule Engine used [EOQualifier](https://developer.apple.com/legacy/library/documentation/LegacyTechnologies/WebObjects/WebObjects_5/EOControlRef/Java/Classes/EOQualifier.html) and [Assignment](https://developer.apple.com/legacy/library/documentation/LegacyTechnologies/WebObjects/WebObjects_5/DirectToWebRef/Java/Classes/Assignment.html) classes to describe rules. X rules are based on [NSPredicate](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSPredicate_Class/Reference/NSPredicate.html) and [NSExpression](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSExpression_Class/Reference/NSExpression.html#//apple_ref/occ/cl/NSExpression) classes.
 
 ## Web Services
 
