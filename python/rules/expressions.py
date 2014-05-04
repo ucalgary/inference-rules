@@ -108,7 +108,7 @@ class Expression(object):
 		if not functionName in _BuiltInFunctions:
 			raise
 
-		operand = expressionForConstantValue(_BuiltInFunctions)
+		operand = Expression.expressionForConstantValue(_BuiltInFunctions)
 		return FunctionExpression(operand, functionName, parameters or [], ExpressionType.Function)
 
 	# Creating an Expression
