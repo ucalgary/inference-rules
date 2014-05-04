@@ -5,7 +5,6 @@ import datetime
 import math
 import random
 
-from . import expression
 from . import kvc
 
 _BuiltInFunctions = {
@@ -35,10 +34,107 @@ _BuiltInFunctions = {
 	'valueForKeyPath:' : lambda object, keyPath: kvc.valueForKeyPath(object, keyPath)
 }
 
-class ConstantValueExpression(expression.Expression):
+# Quasi-Enums
+
+class ExpressionType(object):
+
+	ConstantValue = 0
+	EvaluatedObject = 1
+	Variable = 2
+	KeyPath = 3
+	Function = 4
+	UnionSet = 5
+	IntersectSet = 6
+	MinusSet = 7
+	Subquery = 13
+	Aggregate = 14
+	AnyKey = 15         # Not supported. Represents any key for a Spotlight query.
+	Block = 19          # Not supported. Uses a Bbock for evaluating objects.
+
+class Expression(object):
+
+	# Creating an Expression for a Value
+
+	@staticmethod
+	def expressionForConstantValue(value):
+		return ConstantValueExpression(value)
+
+	@staticmethod
+	def expressionForEvaluatedObject():
+		return SelfExpression()
+
+	@staticmethod
+	def expressionForKeyPath(keyPath):
+		return KeyPathExpression(keyPath)
+
+	@staticmethod
+	def expressionForVariable(variable):
+		return VariableExpression(variable)
+
+	# Creating a Collection Expression
+
+	@staticmethod
+	def expressionForAggregate(collection):
+		return AggregateExpression(collection)
+
+	@staticmethod
+	def expressionForUnionSet(left, right):
+		return SetExpression(ExpressionType.UnionSet, leftSet, rightSet)
+
+	@staticmethod
+	def expressionForIntersectSet(left, right):
+		return SetExpression(ExpressionType.IntersectSet, leftSet, rightSet)
+
+	@staticmethod
+	def expressionForMinusSet(left, right):
+		return SetExpression(ExpressionType.MinusSet, leftSet, rightSet)
+
+	# Creating a Subquery
+
+	@staticmethod
+	def expressionForSubquery(expression, variable, predicate):
+		raise NotImplementedError
+
+	# Creating an Expression Using Blocks
+
+	@staticmethod
+	def expressionForBlock(block, arguments=None):
+		raise NotImplementedError
+
+	# Creating an Expression for a Function
+
+	@staticmethod
+	def expressionForFunction(functionName, parameters=None):
+		if not functionName in _BuiltInFunctions:
+			raise
+
+		operand = expressionForConstantValue(_BuiltInFunctions)
+		return FunctionExpression(operand, functionName, parameters or [], ExpressionType.Function)
+
+	# Creating an Expression
+
+	@staticmethod
+	def expressionWithFormat(format, **args):
+		pass
+		
+	# Initializing an Expression
+
+	def __init__(self, type):
+		self._type = type
+
+	@property
+	def expressionType(self):
+		return self._type
+
+	# Evaluating an Expression
+
+	def expressionValueWithObject(self, object, context=None):
+		return None
+
+class ConstantValueExpression(Expression):
 
 	def __init__(self, value):
-		super(ConstantValueExpression, self).__init__(expression.ExpressionType.ConstantValue)
+		super(ConstantValueExpression, self).__init__(ExpressionType.ConstantValue)
 
 		self._value = value
 
@@ -49,15 +145,15 @@ class ConstantValueExpression(expression.Expression):
 	def expressionValueWithObject(self, object, context=None):
 		return self.constantValue
 
-class SelfExpression(expression.Expression):
+class SelfExpression(Expression):
 
 	def __init__(self):
-		super(SelfExpression, self).__init__(expression.ExpressionType.EvaluatedObject)
+		super(SelfExpression, self).__init__(ExpressionType.EvaluatedObject)
 
 	def expressionValueWithObject(self, object, context=None):
 		return object
 
-class VariableExpression(expression.Expression):
+class VariableExpression(Expression):
 
 	def __init__(self, variable):
 		super(VariableExpression, self).__init__(expression.ExpresionType.Variable)
@@ -71,7 +167,7 @@ class VariableExpression(expression.Expression):
 	def expressionValueWithObject(self, object, context=None):
 		return None # return from the variable bindings dictionary the value for the key variable
 
-class AggregateExpression(expression.Expression):
+class AggregateExpression(Expression):
 
 	def __init__(self, collection):
 		super(AggregateExpression, self).__init__(expression.ExpresionType.Aggregate)
@@ -85,12 +181,12 @@ class AggregateExpression(expression.Expression):
 	def expressionValueWithObject(self, object, context=None):
 		return self.collection
 
-class SetExpression(expression.Expression):
+class SetExpression(Expression):
 
 	_expressionFunctionNamesByType = {
-		expression.ExpressionType.UnionSet : 'union',
-		expression.ExpressionType.IntersectSet: 'intersection',
-		expression.ExpressionType.MinusSet: 'difference'
+		ExpressionType.UnionSet : 'union',
+		ExpressionType.IntersectSet: 'intersection',
+		ExpressionType.MinusSet: 'difference'
 	}
 
 	def __init__(self, type, leftExpression, rightExpression):
@@ -121,7 +217,7 @@ class SetExpression(expression.Expression):
 
 		return expressionFunction(leftValue, rightValue)
 
-class FunctionExpression(expression.Expression):
+class FunctionExpression(Expression):
 
 	def __init__(self, operand, selector, parameters, type):
 		super(FunctionExpression, self).__init__(type)
@@ -159,7 +255,7 @@ class FunctionExpression(expression.Expression):
 class KeyPathExpression(FunctionExpression):
 
 	def __init__(self, keyPath):
-		super(KeyPathExpression, self).__init__(expression.expressionForConstantValue(_BuiltInFunctions), 'valueForKeyPath:', [expression.expressionForEvaluatedObject(), expression.expressionForConstantValue(keyPath)], expression.ExpressionType.KeyPath)
+		super(KeyPathExpression, self).__init__(Expression.expressionForConstantValue(_BuiltInFunctions), 'valueForKeyPath:', [Expression.expressionForEvaluatedObject(), Expression.expressionForConstantValue(keyPath)], ExpressionType.KeyPath)
 
 	@property
 	def pathExpression(self):
