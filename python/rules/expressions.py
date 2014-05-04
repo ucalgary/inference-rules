@@ -179,7 +179,7 @@ class AggregateExpression(Expression):
 		return self._collection
 
 	def expressionValueWithObject(self, object, context=None):
-		return self.collection
+		return map(lambda e: e.expressionValueWithObject(object, context=context), self.collection)
 
 class SetExpression(Expression):
 
