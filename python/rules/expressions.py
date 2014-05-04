@@ -156,7 +156,7 @@ class SelfExpression(Expression):
 class VariableExpression(Expression):
 
 	def __init__(self, variable):
-		super(VariableExpression, self).__init__(expression.ExpresionType.Variable)
+		super(VariableExpression, self).__init__(ExpressionType.Variable)
 
 		self._variable = variable
 
@@ -170,7 +170,7 @@ class VariableExpression(Expression):
 class AggregateExpression(Expression):
 
 	def __init__(self, collection):
-		super(AggregateExpression, self).__init__(expression.ExpresionType.Aggregate)
+		super(AggregateExpression, self).__init__(ExpressionType.Aggregate)
 
 		self._collection = collection
 
