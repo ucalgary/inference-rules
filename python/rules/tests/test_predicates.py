@@ -28,19 +28,14 @@ class PredicatesBasicCreationAndEvaluationTest(unittest.TestCase):
 		self.assertTrue(evaluatedValue)
 
 	def testAndPredicate(self):
-		leftExpression = Expression.expressionForKeyPath(self.key)
-		rightExpression = Expression.expressionForConstantValue(self.value)
-		comparisonPredicate = ComparisonPredicate(leftExpression, rightExpression)
-		predicate = Predicate.andPredicateWithSubpredicates([comparisonPredicate, comparisonPredicate])
+		truePredicate = Predicate.predicateWithValue(True)
+		predicate = Predicate.andPredicateWithSubpredicates([truePredicate, truePredicate])
 		evaluatedValue = predicate.evaluateWithObject(self.object)
 		self.assertTrue(evaluatedValue)
 
 	def testOrPredicate(self):
-		leftExpression = Expression.expressionForKeyPath(self.key)
-		correctRightExpression = Expression.expressionForConstantValue(self.value)
-		incorrectRightExpression = Expression.expressionForConstantValue(None)
-		correctPredicate = ComparisonPredicate(leftExpression, correctRightExpression)
-		incorrectPredicate = ComparisonPredicate(leftExpression, incorrectRightExpression)
-		predicate = Predicate.orPredicateWithSubpredicates([correctPredicate, incorrectPredicate])
+		truePredicate = Predicate.predicateWithValue(True)
+		falsePredicate = Predicate.predicateWithValue(False)
+		predicate = Predicate.orPredicateWithSubpredicates([truePredicate, falsePredicate])
 		evaluatedValue = predicate.evaluateWithObject(self.object)
 		self.assertTrue(evaluatedValue)
