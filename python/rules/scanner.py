@@ -98,7 +98,7 @@ class Scanner(object):
 	def scanUpToString(self, s):
 		current = self.scanLocation
 		string = self.string
-		captured = nil
+		captured = None
 
 		while current < len(string):
 			currentStr = string[current:]
