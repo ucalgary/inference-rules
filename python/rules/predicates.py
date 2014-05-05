@@ -36,7 +36,7 @@ class CompoundPredicateType(object):
 
 class Predicate(object):
 	
-	# Creating Predicates
+	# Creating a Predicate
 
 	@staticmethod
 	def predicateWithFormat(format, **args):
