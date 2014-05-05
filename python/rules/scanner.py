@@ -121,24 +121,21 @@ class Scanner(object):
 		return captured
 
 	def scanWithParseFunction(self, func):
-		import math
-
 		self._movePastCharactersToBeSkipped()
 		string = self.string
 		loc = self.scanLocation
 
-		if self.atEnd:
-			return 0
-
-		s = string[loc:]
-		f = func(s)
-
-		if math.isnan(f):
-			return None
-
-		loc += len(str(f))
+		f = func(0)
 		i = 0
-		while not math.isnan(float(string[loc + i :])):
+
+		if self.atEnd:
+			return f
+			
+		while not self.atEnd:
+			try:
+				f = func(string[loc:loc + i + 1])
+			except ValueError:
+				break
 			i += 1
 
 		self.scanLocation = loc + i
