@@ -38,6 +38,7 @@ class Scanner(object):
 			location = len(self.string)
 		elif location < 0:
 			location = 0
+		self._scanLocation = location
 
 	def scanCharactersFromSet(self, scanSet):
 		return self._scanWithSet(scanSet, False)
