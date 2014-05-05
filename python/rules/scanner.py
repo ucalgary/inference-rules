@@ -77,7 +77,7 @@ class Scanner(object):
 		toSkip = self.charactersToBeSkipped
 
 		while current < len(string):
-			if string[current] in toSkip:
+			if not string[current] in toSkip:
 				break
 			current += 1
 
