@@ -18,14 +18,14 @@ class PredicatesBasicCreationAndEvaluationTest(unittest.TestCase):
 	def testPredicateWithValue(self):
 		predicate = Predicate.predicateWithValue(True)
 		evaluatedValue = predicate.evaluateWithObject(self.object)
-		self.assertEqual(evaluatedValue, True)
+		self.assertTrue(evaluatedValue)
 
 	def testComparisonPredicate(self):
 		leftExpression = Expression.expressionForKeyPath(self.key)
 		rightExpression = Expression.expressionForConstantValue(self.value)
 		predicate = ComparisonPredicate(leftExpression, rightExpression)
 		evaluatedValue = predicate.evaluateWithObject(self.object)
-		self.assertEqual(evaluatedValue, True)
+		self.assertTrue(evaluatedValue)
 
 	def testAndPredicate(self):
 		leftExpression = Expression.expressionForKeyPath(self.key)
@@ -33,7 +33,7 @@ class PredicatesBasicCreationAndEvaluationTest(unittest.TestCase):
 		comparisonPredicate = ComparisonPredicate(leftExpression, rightExpression)
 		predicate = Predicate.andPredicateWithSubpredicates([comparisonPredicate, comparisonPredicate])
 		evaluatedValue = predicate.evaluateWithObject(self.object)
-		self.assertEqual(evaluatedValue, True)
+		self.assertTrue(evaluatedValue)
 
 	def testOrPredicate(self):
 		leftExpression = Expression.expressionForKeyPath(self.key)
@@ -43,4 +43,4 @@ class PredicatesBasicCreationAndEvaluationTest(unittest.TestCase):
 		incorrectPredicate = ComparisonPredicate(leftExpression, incorrectRightExpression)
 		predicate = Predicate.orPredicateWithSubpredicates([correctPredicate, incorrectPredicate])
 		evaluatedValue = predicate.evaluateWithObject(self.object)
-		self.assertEqual(evaluatedValue, True)
+		self.assertTrue(evaluatedValue)
