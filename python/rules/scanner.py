@@ -89,11 +89,11 @@ class Scanner(object):
 		if self.atEnd:
 			return None
 
-		currentStr = self.string[self.scanLocation:]
+		currentStr = self.string[self.scanLocation:self.scanLocation + len(s)]
 		if (self.caseSensitive and currentStr != s) or (not self.caseSensitive and (currentStr.lower() != s.lower())):
 			return None
 		else:
-			self.scanLocation += s.length
+			self.scanLocation += len(s)
 			return s
 
 	def scanUpToString(self, s):
