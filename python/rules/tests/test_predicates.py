@@ -30,13 +30,28 @@ class PredicatesBasicCreationAndEvaluationTest(unittest.TestCase):
 
 	def testAndPredicate(self):
 		truePredicate = Predicate.predicateWithValue(True)
-		predicate = Predicate.andPredicateWithSubpredicates([truePredicate, truePredicate])
-		evaluatedValue = predicate.evaluateWithObject(self.object)
-		self.assertTrue(evaluatedValue)
+		falsePredicate = Predicate.predicateWithValue(False)
+
+		trueAndTruePredicate = Predicate.andPredicateWithSubpredicates([truePredicate, truePredicate])
+		trueAndFalsePredicate = Predicate.andPredicateWithSubpredicates([truePredicate, falsePredicate])
+		falseAndTruePredicate = Predicate.andPredicateWithSubpredicates([falsePredicate, truePredicate])
+		falseAndFalsePredicate = Predicate.andPredicateWithSubpredicates([falsePredicate, falsePredicate])
+
+		self.assertTrue(trueAndTruePredicate.evaluateWithObject(self.object))
+		self.assertFalse(trueAndFalsePredicate.evaluateWithObject(self.object))
+		self.assertFalse(falseAndTruePredicate.evaluateWithObject(self.object))
+		self.assertFalse(falseAndFalsePredicate.evaluateWithObject(self.object))
 
 	def testOrPredicate(self):
 		truePredicate = Predicate.predicateWithValue(True)
 		falsePredicate = Predicate.predicateWithValue(False)
-		predicate = Predicate.orPredicateWithSubpredicates([truePredicate, falsePredicate])
-		evaluatedValue = predicate.evaluateWithObject(self.object)
-		self.assertTrue(evaluatedValue)
+
+		trueOrTruePredicate = Predicate.orPredicateWithSubpredicates([truePredicate, truePredicate])
+		trueOrFalsePredicate = Predicate.orPredicateWithSubpredicates([truePredicate, falsePredicate])
+		falseOrTruePredicate = Predicate.orPredicateWithSubpredicates([falsePredicate, truePredicate])
+		falseOrFalsePredicate = Predicate.orPredicateWithSubpredicates([falsePredicate, falsePredicate])
+
+		self.assertTrue(trueOrTruePredicate.evaluateWithObject(self.object))
+		self.assertTrue(trueOrFalsePredicate.evaluateWithObject(self.object))
+		self.assertTrue(falseOrTruePredicate.evaluateWithObject(self.object))
+		self.assertFalse(falseOrFalsePredicate.evaluateWithObject(self.object))
