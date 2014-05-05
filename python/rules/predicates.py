@@ -87,7 +87,7 @@ class ComparisonPredicate(Predicate):
 
 		self._leftExpression = leftExpression
 		self._rightExpression = rightExpression
-		self._operator = ComparisonPredicateOperator(operatorType, modifier, **options)
+		self._operator = ComparisonPredicateOperator(type, modifier, **options)
 	
 	@property
 	def leftExpression(self):
@@ -119,7 +119,7 @@ class CompoundPredicate(Predicate):
 		from .operators import CompoundPredicateOperator
 
 		self._subpredicates = subpredicates
-		self._operator = CompoundPredicateOperator(operatorType, 0)
+		self._operator = CompoundPredicateOperator(type, 0)
 
 	@property
 	def compoundPredicateType(self):
