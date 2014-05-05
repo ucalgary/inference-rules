@@ -3,7 +3,7 @@
 import __builtin__
 import re
 
-from . import predicate
+from . import predicates
 
 class PredicateOperator(object):
 
@@ -31,20 +31,20 @@ class PredicateOperator(object):
 class ComparisonPredicateOperator(PredicateOperator):
 
 	_operatorFunctionsByType = {
-		predicate.ComparisonPredicateType.LessThan           : lambda l, r: l < r,
-		predicate.ComparisonPredicateType.LessThanOrEqual    : lambda l, r: l <= r,
-		predicate.ComparisonPredicateType.GreaterThan        : lambda l, r: l > r,
-		predicate.ComparisonPredicateType.GreaterThanOrEqual : lambda l, r: l >= r,
-		predicate.ComparisonPredicateType.EqualTo            : lambda l, r: l == r,
-		predicate.ComparisonPredicateType.NotEqualTo         : lambda l, r: l != r,
-		predicate.ComparisonPredicateType.Matches            : lambda l, r: re.match(l, r),
-		predicate.ComparisonPredicateType.Like               : None, # subset of MATCHES, similar to SQL like
-		predicate.ComparisonPredicateType.BeginsWith         : lambda l, r: l.startswith(r),
-		predicate.ComparisonPredicateType.EndsWith           : lambda l, r: l.endwith(r),
-		predicate.ComparisonPredicateType.In                 : lambda l, r: l in r,
-		predicate.ComparisonPredicateType.CustomSelector     : None, # not supported yet
-		predicate.ComparisonPredicateType.Contains           : lambda l, r: r in l, # l contains r, l must be a collection
-		predicate.ComparisonPredicateType.Between            : lambda l, r: r[0] < l < r[1]
+		predicates.ComparisonPredicateType.LessThan           : lambda l, r: l < r,
+		predicates.ComparisonPredicateType.LessThanOrEqual    : lambda l, r: l <= r,
+		predicates.ComparisonPredicateType.GreaterThan        : lambda l, r: l > r,
+		predicates.ComparisonPredicateType.GreaterThanOrEqual : lambda l, r: l >= r,
+		predicates.ComparisonPredicateType.EqualTo            : lambda l, r: l == r,
+		predicates.ComparisonPredicateType.NotEqualTo         : lambda l, r: l != r,
+		predicates.ComparisonPredicateType.Matches            : lambda l, r: re.match(l, r),
+		predicates.ComparisonPredicateType.Like               : None, # subset of MATCHES, similar to SQL like
+		predicates.ComparisonPredicateType.BeginsWith         : lambda l, r: l.startswith(r),
+		predicates.ComparisonPredicateType.EndsWith           : lambda l, r: l.endwith(r),
+		predicates.ComparisonPredicateType.In                 : lambda l, r: l in r,
+		predicates.ComparisonPredicateType.CustomSelector     : None, # not supported yet
+		predicates.ComparisonPredicateType.Contains           : lambda l, r: r in l, # l contains r, l must be a collection
+		predicates.ComparisonPredicateType.Between            : lambda l, r: r[0] < l < r[1]
 	}
 
 	def performOperationUsingObjects(self, obj1, obj2):
@@ -56,9 +56,9 @@ class ComparisonPredicateOperator(PredicateOperator):
 class CompoundPredicateOperator(PredicateOperator):
 
 	_operatorFunctionsByType = {
-		predicate.CompoundPredicateType.Not: lambda p: not p[0],
-		predicate.CompoundPredicateType.And: getattr(__builtin__, 'all'),
-		predicate.CompoundPredicateType.Or:  getattr(__builtin__, 'any')
+		predicates.CompoundPredicateType.Not: lambda p: not p[0],
+		predicates.CompoundPredicateType.And: getattr(__builtin__, 'all'),
+		predicates.CompoundPredicateType.Or:  getattr(__builtin__, 'any')
 	}
 
 	def evaluatePredicatesWithObject(self, predicates, obj, substitutions=None):
