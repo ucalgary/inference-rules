@@ -15,10 +15,11 @@ class PredicatesBasicCreationAndEvaluationTest(unittest.TestCase):
 			self.key: self.value
 		}
 
-	def testPredicateWithValue(self):
-		predicate = Predicate.predicateWithValue(True)
-		evaluatedValue = predicate.evaluateWithObject(self.object)
-		self.assertTrue(evaluatedValue)
+	def testValuePredicate(self):
+		truePredicate = Predicate.predicateWithValue(True)
+		falsePredicate = Predicate.predicateWithValue(False)
+		self.assertTrue(truePredicate.evaluateWithObject(self.object))
+		self.assertFalse(falsePredicate.evaluateWithObject(self.object))
 
 	def testComparisonPredicate(self):
 		leftExpression = Expression.expressionForKeyPath(self.key)
