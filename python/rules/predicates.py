@@ -36,6 +36,30 @@ class CompoundPredicateType(object):
 
 class Predicate(object):
 	
+	# Creating Predicates
+
+	@staticmethod
+	def predicateWithFormat(format, **args):
+		pass
+
+	@staticmethod
+	def predicateWithValue(value):
+		return TruePredicate if value else FalsePredicate
+
+	@staticmethod
+	def andPredicateWithSubpredicates(subpredicates):
+		return CompoundPredicate(subpredicates, type=CompoundPredicateType.And)
+
+	@staticmethod
+	def notPredicateWithSubpredicate(subpredicate):
+		return CompoundPredicate((subpredicate,), type=CompoundPredicateType.Not)
+
+	@staticmethod
+	def orPredicateWithSubpredicates(subpredicates):
+		return CompoundPredicate(subpredicates, type=CompoundPredicateType.Or)
+
+	# Initializing a Predicate
+
 	def __init__(self):
 		pass
 
@@ -126,21 +150,4 @@ class ValuePredicate(Predicate):
 
 TruePredicate = ValuePredicate(True)
 FalsePredicate = ValuePredicate(False)
-
-# Creation functions
-
-def predicateWithFormat(format, **args):
-	pass
-
-def predicateWithValue(value):
-	return TruePredicate if value else FalsePredicate
-
-def andPredicateWithSubpredicates(subpredicates):
-	return CompoundPredicate(subpredicates, type=CompoundPredicateType.And)
-
-def notPredicateWithSubpredicate(subpredicate):
-	return CompoundPredicate((subpredicate,), type=CompoundPredicateType.Not)
-
-def orPredicateWithSubpredicates(subpredicates):
-	return CompoundPredicate(subpredicates, type=CompoundPredicateType.Or)
 
