@@ -101,8 +101,8 @@ class Scanner(object):
 		captured = None
 
 		while current < len(string):
-			currentStr = string[current:]
-			if currentStr == s or (not self.caseSensitive and currentStr.lower() == string.lower()):
+			currentStr = string[current:current + len(s)]
+			if currentStr == s or (not self.caseSensitive and currentStr.lower() == s.lower()):
 				break
 
 			if not captured:
