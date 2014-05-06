@@ -276,7 +276,7 @@ class KeyPathExpression(FunctionExpression):
 
 	@property
 	def pathExpression(self):
-		return self.arguments[0]
+		return self.arguments[1]
 
 	@property
 	def keyPath(self):

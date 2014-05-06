@@ -1,7 +1,7 @@
 import string
 import unittest
 
-from ..scanners import Scanner
+from ..scanners import Scanner, ExpressionScanner
 
 class ScannerTest(unittest.TestCase):
 
@@ -61,3 +61,21 @@ class ScannerTest(unittest.TestCase):
 		result = scanner.scanUpToCharactersFromSet(string.ascii_lowercase)
 		self.assertEqual(result, '12345')
 		self.assertEqual(scanner.scanLocation, 5)
+
+
+class ExpressionScannerTest(unittest.TestCase):
+
+	def testParseTrueFalseNullExpression(self):
+		for expressionFormat, expectedValue in (
+			('TRUE', True), ('YES', True),
+			('FALSE', False), ('NO', False),
+			('NULL', None), ('NIL', None),
+		):
+			scanner = ExpressionScanner(expressionFormat)
+			expression = scanner.parseExpression()
+			self.assertEqual(expression.constantValue, expectedValue)
+
+	def testParseVariableExpression(self):
+		scanner = ExpressionScanner('$variable')
+		expression = scanner.parseExpression()
+		self.assertEqual(expression.variable, 'variable')
