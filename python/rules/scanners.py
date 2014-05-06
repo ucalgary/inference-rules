@@ -77,6 +77,9 @@ class Scanner(object):
 		return result
 
 	def _movePastCharactersToBeSkipped(self):
+		if not self.charactersToBeSkipped:
+			return
+
 		current = self.scanLocation
 		string = self.string
 		toSkip = self.charactersToBeSkipped
