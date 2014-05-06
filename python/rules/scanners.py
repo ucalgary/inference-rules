@@ -1,5 +1,8 @@
 # coding=utf-8
 
+from .expressions import Expression
+
+
 class Scanner(object):
 
 	def __init__(self, string):
@@ -169,19 +172,64 @@ class ExpressionScanner(Scanner):
 		pass
 
 	def parseFunctionalExpression(self):
-		pass
+		left = self.parseSimpleExpression()
+
+		while True:
+			if self.scanString('('):
+				
 
 	def parsePowerExpression(self):
-		pass
+		left = self.parseFunctionalExpression()
+
+		while True:
+			right = None
+
+			if self.scanString('**'):
+				right = self.parseFunctionalExpression()
+				left = Expression.expressionForFunction('raise:toPower:', parameters=[left, right])
+			else:
+				return left
 
 	def parseMultiplicationExpression(self):
-		pass
+		left = self.parsePowerExpression()
+
+		while True:
+			right = None
+
+			if self.scanString('*'):
+				right = self.parsePowerExpression()
+				left = Expression.expressionForFunction('multiply:by:', parameters=[left, right])
+			elif self.scanString('/'):
+				right = self.parsePowerExpression()
+				left = Expression.expressionForFunction('divide:by:', parameters=[left, right])
+			else:
+				return left
 
 	def parseAdditionExpression(self):
-		pass
+		left = self.parseMultiplicationExpression()
+
+		while True:
+			right = None
+
+			if self.scanString('+'):
+				right = self.parseMultiplicationExpression()
+				left = Expression.expressionForFunction('add:to:', parameters=[left, right])
+			elif self.scanString('-'):
+				right = self.parseMultiplicationExpression()
+				left = Expression.expressionForFunction('from:subtract:', parameters=[left, right])
+			else:
+				return left
 
 	def parseBinaryExpression(self):
-		pass
+		left = self.parseAdditionExpression()
+
+		while True:
+			right = None
+
+			if self.scanString(':='):
+				right = self.parseAdditionExpression()
+			else:
+				return left
 
 
 class PredicateScanner(Scanner):

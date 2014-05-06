@@ -126,6 +126,23 @@ class Expression(object):
 	def expressionType(self):
 		return self._type
 
+	# Getting Information About an Expression
+
+	def _default_expression_info(self):
+		return None
+
+	arguments = property(_default_expression_info)
+	collection = property(_default_expression_info)
+	constantValue = property(_default_expression_info)
+	expressionType = property(_default_expression_info)
+	function = property(_default_expression_info)
+	keyPath = property(_default_expression_info)
+	leftExpression = property(_default_expression_info)
+	operand = property(_default_expression_info)
+	predicate = property(_default_expression_info)
+	rightExpression = property(_default_expression_info)
+	variable = property(_default_expression_info)
+
 	# Evaluating an Expression
 
 	def expressionValueWithObject(self, object, context=None):
