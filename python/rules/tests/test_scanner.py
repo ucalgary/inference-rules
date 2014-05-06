@@ -1,7 +1,7 @@
 import string
 import unittest
 
-from ..scanner import Scanner
+from ..scanners import Scanner
 
 class ScannerTest(unittest.TestCase):
 
