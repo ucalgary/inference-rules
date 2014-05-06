@@ -8,25 +8,13 @@ class Scanner(object):
 		self._charactersToBeSkipped = ()
 		self._caseSensitive = False
 
-	@property
-	def caseSensitive(self):
-		return self._caseSensitive
-
-	@caseSensitive.setter
-	def caseSensitive(self, value):
-		self._caseSensitive = value
+	# Getting a Scanner's String
 
 	@property
 	def string(self):
 		return self._string
 
-	@property
-	def charactersToBeSkipped(self):
-		return self._charactersToBeSkipped
-
-	def isAtEnd(self):
-		return self.scanLocation == len(self.string)
-	atEnd = property(isAtEnd)
+	# Configuring a Scanner
 
 	@property
 	def scanLocation(self):
@@ -39,6 +27,20 @@ class Scanner(object):
 		elif location < 0:
 			location = 0
 		self._scanLocation = location
+
+	@property
+	def caseSensitive(self):
+		return self._caseSensitive
+
+	@caseSensitive.setter
+	def caseSensitive(self, value):
+		self._caseSensitive = value
+
+	@property
+	def charactersToBeSkipped(self):
+		return self._charactersToBeSkipped
+
+	# Scanning a String	
 
 	def scanCharactersFromSet(self, scanSet):
 		return self._scanWithSet(scanSet, False)
@@ -149,3 +151,8 @@ class Scanner(object):
 	def scanInt(self):
 		import __builtin__
 		return self.scanWithParseFunction(__builtin__.int)
+
+	def isAtEnd(self):
+		return self.scanLocation == len(self.string)
+	atEnd = property(isAtEnd)
+
