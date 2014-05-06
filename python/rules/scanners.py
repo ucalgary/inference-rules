@@ -156,3 +156,47 @@ class Scanner(object):
 		return self.scanLocation == len(self.string)
 	atEnd = property(isAtEnd)
 
+
+class ExpressionScanner(Scanner):
+
+	def parseExpression(self):
+		return self.parseBinaryExpression()
+
+	def parseIdentifierExpression(self):
+		pass
+
+	def parseSimpleExpression(self):
+		pass
+
+	def parseFunctionalExpression(self):
+		pass
+
+	def parsePowerExpression(self):
+		pass
+
+	def parseMultiplicationExpression(self):
+		pass
+
+	def parseAdditionExpression(self):
+		pass
+
+	def parseBinaryExpression(self):
+		pass
+
+
+class PredicateScanner(Scanner):
+
+	def parsePredicate(self):
+		return self.parseAnd()
+
+	def parseAnd(self):
+		pass
+
+	def parseNot(self):
+		pass
+
+	def parseOr(self):
+		pass
+
+	def parseComparison(self):
+		pass
