@@ -169,24 +169,137 @@ class ExpressionScanner(Scanner):
 		return self.parseBinaryExpression()
 
 	def parseIdentifierExpression(self):
-		pass
+		self.scanString('#')
+		ident = self.scanCharactersFromSet(self.parseIdentifierExpression._identifier)
+		if not ident:
+			raise ValueError('Missing identifier: %s' % self.string[self.scanLocation:])
+		return Expression.expressionForKeyPath(ident)
+	parseIdentifierExpression._identifier = '_$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 	def parseSimpleExpression(self):
-		pass
+		dbl = self.scanFloat()
+		if dbl:
+			return Expression.expressionForConstantValue(dbl)
+		if self.scanString('-'):
+			return Expression.expressionForFunction('_chs', parameters=[self.parseExpression()])
+		if self.scanString('('):
+			arg = self.parseExpression()
+			if not self.scanString(')'):
+				raise ValueError('Missing ) in expression')
+			return arg
+		if self.scanString('{'):
+			if self.scanString('}'):
+				return Expression.expressionForConstantValue([])
+			a = []
+			a.append(self.parseExpression())
+			while self.scanString(','):
+				a.append(self.parseExpression())
+			if not self.scanString('}'):
+				raise ValueError('Missing } in aggregate')
+			return Expression.expressionForConstantValue(a)
+		if self.scanString('NULL') or self.scanString('NIL'):
+			return Expression.expressionForConstantValue(None)
+		if self.scanString('TRUE') or self.scanString('YES'):
+			return Expression.expressionForConstantValue(True)
+		if self.scanString('FALSE') or self.scanString('NO'):
+			return Expression.expressionForConstantValue(False)
+		if self.scanString('SELF'):
+			return Expression.expressionForEvaluatedObject()
+		if self.scanString('$'):
+			var = self.parseIdentifierExpression()
+			if not var.keyPath:
+				raise ValueError('Invalid variable identifier: %s' % var)
+			return Expression.expressionForVariable(var.keyPath)
+
+		location = self.scanLocation
+		if self.scanString('%'):
+			if not self.atEnd:
+				c = self.string[location]
+				if c == '%':
+					location = self.scanLocation
+				elif c == 'K':
+					self.scanLocation += 1
+					return Expression.expressionForKeyPath(self.nextArg())
+				elif c in '@cCdDioOuUxXeEfgG':
+					self.scanLocation += 1
+					return Expression.expressionForConstantValue(self.nextArg())
+				elif c == 'h':
+					self.scanString('h')
+					if not self.atEnd:
+						c = self.string[self.scanLocation]
+						if c in 'iu':
+							self.scanLocation += 1
+							return Expression.expressionForConstantValue(self.nextArg())
+				elif c == 'q':
+					self.scanString('q')
+					if not self.atEnd:
+						c = self.string[self.scanLocation]
+						if c in 'iuxX':
+							self.scanLocation += 1
+							return Expression.expressionForConstantValue(self.nextArg())
+			self.scanLocation = location
+
+		for q, q_name in (('"', 'double quoted'), ("'", 'single quoted')):
+			if self.scanString(q):
+				skip = self.charactersToBeSkipped
+				self.charactersToBeSkipped = None
+				scanned = self.scanUpToString(q)
+				if not scanned:
+					self.charactersToBeSkipped = skip
+					raise ValueError('Invalid %s literal at %i' % (q_name, location))
+				self.charactersToBeSkipped = skip
+				self.scanString('"')
+				return Expression.expressionForConstantValue(scanned)
+		if self.scanString('@'):
+			e = self.parseIdentifierExpression()
+			if not e.keyPath:
+				raise ValueError('Invalid keypath identifier: %s' % e)
+			return Expression.expressionForKeyPath('@%s' % e.keyPath)
+
+		return self.parseIdentifierExpression()
 
 	def parseFunctionalExpression(self):
 		left = self.parseSimpleExpression()
 
 		while True:
 			if self.scanString('('):
-				
+				# function expression
+				if not left.keyPath:
+					raise ValueError('Invalid function identifier: %s' % left)
+				if not self.scanString(')'):
+					args = []
+					args.append(self.parseExpression())
+					while self.scanString(','):
+						args.append(self.parseExpression())
+					if not self.scanString(')'):
+						raise ValueError('Missing ) in function arguments')
+			elif self.scanString('['):
+				# index expression
+				if self.scanPredicateKeyword('FIRST'):
+					left = Expression.expressionForFunction('_first', parameters=[self.parseExpression()])
+				elif self.scanPredicateKeyword('LAST'):
+					left = Expression.expressionForFunction('_last', parameters=[self.parseExpression()])
+				elif self.scanPredicateKeyword('SIZE'):
+					left = Expression.expressionForFunction('count', parameters=[self.parseExpression()])
+				else:
+					left = Expression.expressionForFunction('_index', parameters=[left, self.parseExpression()])
+				if not self.scanString(']'):
+					raise ValueError('Missing ] in index argument')
+			elif self.scanString('.'):
+				# keypath expression
+				if not left.keyPath:
+					raise ValueError('Invalid left keypath: %s' % left)
+				right = self.parseExpression()
+				if not right.keyPath:
+					raise ValueError('Invalid right keypath: %s' % left)
+				left = Expression.expressionForKeyPath('%s.%s' % (left.keyPath, right.keyPath))
+			else:
+				return left
 
 	def parsePowerExpression(self):
 		left = self.parseFunctionalExpression()
 
 		while True:
-			right = None
-
 			if self.scanString('**'):
 				right = self.parseFunctionalExpression()
 				left = Expression.expressionForFunction('raise:toPower:', parameters=[left, right])
@@ -197,8 +310,6 @@ class ExpressionScanner(Scanner):
 		left = self.parsePowerExpression()
 
 		while True:
-			right = None
-
 			if self.scanString('*'):
 				right = self.parsePowerExpression()
 				left = Expression.expressionForFunction('multiply:by:', parameters=[left, right])
@@ -212,8 +323,6 @@ class ExpressionScanner(Scanner):
 		left = self.parseMultiplicationExpression()
 
 		while True:
-			right = None
-
 			if self.scanString('+'):
 				right = self.parseMultiplicationExpression()
 				left = Expression.expressionForFunction('add:to:', parameters=[left, right])
@@ -227,8 +336,6 @@ class ExpressionScanner(Scanner):
 		left = self.parseAdditionExpression()
 
 		while True:
-			right = None
-
 			if self.scanString(':='):
 				right = self.parseAdditionExpression()
 			else:
