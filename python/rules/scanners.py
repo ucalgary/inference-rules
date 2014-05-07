@@ -43,6 +43,10 @@ class Scanner(object):
 	def charactersToBeSkipped(self):
 		return self._charactersToBeSkipped
 
+	@charactersToBeSkipped.setter
+	def charactersToBeSkipped(self, value):
+		self._charactersToBeSkipped = value
+
 	# Scanning a String	
 
 	def scanCharactersFromSet(self, scanSet):
