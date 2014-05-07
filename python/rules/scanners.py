@@ -267,6 +267,8 @@ class ExpressionScanner(Scanner):
 		left = self.parseSimpleExpression()
 
 		while True:
+			if left.keyPath and self.scanString(':'):
+				left = Expression.expressionForKeyPath(left.keyPath + ':')
 			if self.scanString('('):
 				# function expression
 				if not left.keyPath:
@@ -278,6 +280,7 @@ class ExpressionScanner(Scanner):
 						args.append(self.parseExpression())
 					if not self.scanString(')'):
 						raise ValueError('Missing ) in function arguments')
+				left = Expression.expressionForFunction(left.keyPath, parameters=args)
 			elif self.scanString('['):
 				# index expression
 				if self.scanPredicateKeyword('FIRST'):
