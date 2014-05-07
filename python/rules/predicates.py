@@ -108,7 +108,7 @@ class ComparisonPredicate(Predicate):
 
 	@property
 	def modifier(self):
-		return self._modifier
+		return self._operator.modifier
 
 	@property
 	def operatorType(self):
