@@ -178,7 +178,7 @@ class ExpressionScanner(Scanner):
 
 	def parseSimpleExpression(self):
 		dbl = self.scanFloat()
-		if dbl:
+		if dbl is not None:
 			return Expression.expressionForConstantValue(dbl)
 		if self.scanString('-'):
 			return Expression.expressionForFunction('_chs', parameters=[self.parseExpression()])
