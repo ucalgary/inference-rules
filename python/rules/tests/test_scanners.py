@@ -76,12 +76,14 @@ class ExpressionScannerTest(unittest.TestCase):
 			expression = scanner.parseExpression()
 			self.assertIsInstance(expression, expressions.ConstantValueExpression)
 			self.assertEqual(expression.constantValue, expectedValue)
+			self.assertTrue(scanner.atEnd)
 
 	def testParseNumberConstantValueExpression(self):
 		scanner = ExpressionScanner('1')
 		expression = scanner.parseExpression()
 		self.assertIsInstance(expression, expressions.ConstantValueExpression)
 		self.assertEqual(expression.constantValue, 1)
+		self.assertTrue(scanner.atEnd)
 
 	def testParseStringConstantValueExpression(self):
 		for string in ('"string"', "'string'"):
@@ -89,17 +91,20 @@ class ExpressionScannerTest(unittest.TestCase):
 			expression = scanner.parseExpression()
 			self.assertIsInstance(expression, expressions.ConstantValueExpression)
 			self.assertEqual(expression.constantValue, 'string')
+			self.assertTrue(scanner.atEnd)
 
 	def testParseSelfExpression(self):
 		scanner = ExpressionScanner('SELF')
 		expression = scanner.parseExpression()
 		self.assertIsInstance(expression, expressions.SelfExpression)
+		self.assertTrue(scanner.atEnd)
 
 	def testParseVariableExpression(self):
 		scanner = ExpressionScanner('$variable')
 		expression = scanner.parseExpression()
 		self.assertIsInstance(expression, expressions.VariableExpression)
 		self.assertEqual(expression.variable, 'variable')
+		self.assertTrue(scanner.atEnd)
 
 	def testParseAggregateExpression(self):
 		scanner = ExpressionScanner('{0, 1, 2}')
@@ -108,6 +113,7 @@ class ExpressionScannerTest(unittest.TestCase):
 		for n in range(0, 3):
 			self.assertIsInstance(expression.collection[n], expressions.ConstantValueExpression)
 			self.assertEqual(expression.collection[n].constantValue, n)
+		self.assertTrue(scanner.atEnd)
 
 	def testParseSetExpression(self):
 		for set_type, expression_type in (
@@ -122,6 +128,7 @@ class ExpressionScannerTest(unittest.TestCase):
 			self.assertIsInstance(expression.leftExpression, expressions.AggregateExpression)
 			self.assertIsInstance(expression.rightExpression, expressions.AggregateExpression)
 			self.assertEqual(expression.expressionType, expressions.ExpressionType.UnionSet)
+			self.assertTrue(scanner.atEnd)
 
 	def testParseFunctionExpression(self):
 		scanner = ExpressionScanner('sum:(1, 2)')
@@ -131,9 +138,11 @@ class ExpressionScannerTest(unittest.TestCase):
 		self.assertEqual(expression.function, 'sum:')
 		self.assertEqual(expression.arguments[0].constantValue, 1)
 		self.assertEqual(expression.arguments[1].constantValue, 2)
+		self.assertTrue(scanner.atEnd)
 
 	def testParseKeyPathExpression(self):
 		scanner = ExpressionScanner('a.b.c')
 		expression = scanner.parseExpression()
 		self.assertIsInstance(expression, expressions.KeyPathExpression)
 		self.assertEqual(expression.keyPath, 'a.b.c')
+		self.assertTrue(scanner.atEnd)
