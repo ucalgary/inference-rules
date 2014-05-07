@@ -139,7 +139,7 @@ class Scanner(object):
 		if self.atEnd:
 			return f
 			
-		while loc + i + 1 < len(string):
+		while loc + i + 1 <= len(string):
 			try:
 				f = func(string[loc:loc + i + 1])
 			except ValueError:
