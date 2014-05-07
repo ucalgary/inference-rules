@@ -114,6 +114,10 @@ class ComparisonPredicate(Predicate):
 	def operatorType(self):
 		return self._operator.operatorType
 
+	@property
+	def options(self):
+		return self._operator.options
+
 	# Evaluating
 
 	def evaluateWithObject(self, obj):
