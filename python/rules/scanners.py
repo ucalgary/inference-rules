@@ -133,7 +133,7 @@ class Scanner(object):
 		string = self.string
 		loc = self.scanLocation
 
-		f = func(0)
+		f = None
 		i = 0
 
 		if self.atEnd:
