@@ -387,12 +387,14 @@ class PredicateScanner(ExpressionScanner):
 				('AND', CompoundPredicateType.And),
 				('&&', CompoundPredicateType.And),
 				('OR', CompoundPredicateType.Or),
-				('||', CompoundPredicateType.Or)
+				('||', CompoundPredicateType.Or),
+				('', -1)
 			):
 				if self.scanPredicateKeyword(keyword):
 					predicate_type_container[0] = predicate_type_i
 					return True
-				return False
+				if not keyword:
+					return False
 
 		while hasKeyword():
 			predicate_type = predicate_type_container[0]
