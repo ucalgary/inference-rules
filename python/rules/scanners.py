@@ -253,7 +253,7 @@ class ExpressionScanner(Scanner):
 					self.charactersToBeSkipped = skip
 					raise ValueError('Invalid %s literal at %i' % (q_name, location))
 				self.charactersToBeSkipped = skip
-				self.scanString('"')
+				self.scanString(q)
 				return Expression.expressionForConstantValue(scanned)
 		if self.scanString('@'):
 			e = self.parseIdentifierExpression()
