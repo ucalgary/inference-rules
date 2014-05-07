@@ -1,8 +1,8 @@
 import string
 import unittest
 
-from .. import expressions
-from ..scanners import Scanner, ExpressionScanner
+from .. import expressions, predicates
+from ..scanners import Scanner, ExpressionScanner, PredicateScanner
 
 class ScannerTest(unittest.TestCase):
 
@@ -146,3 +146,99 @@ class ExpressionScannerTest(unittest.TestCase):
 		self.assertIsInstance(expression, expressions.KeyPathExpression)
 		self.assertEqual(expression.keyPath, 'a.b.c')
 		self.assertTrue(scanner.atEnd)
+
+
+class PredicateScannerTest(unittest.TestCase):
+
+	def testParseValuePredicate(self):
+		for format, value in (
+			('TRUEPREDICATE', True),
+			('FALSEPREDICATE', False)
+		):
+			scanner = PredicateScanner(format)
+			predicate = scanner.parsePredicate()
+			self.assertIsInstance(predicate, predicates.ValuePredicate)
+			self.assertEqual(predicate.value, value)
+			self.assertTrue(scanner.atEnd)
+
+	def testParseConjunctionCompoundPredicate(self):
+		format = 'TRUEPREDICATE %s FALSEPREDICATE'
+		for conjunction, predicate_type in (
+			('AND', predicates.CompoundPredicateType.And),
+			('&&', predicates.CompoundPredicateType.And),
+			('OR', predicates.CompoundPredicateType.Or),
+			('||', predicates.CompoundPredicateType.Or)
+		):
+			scanner = PredicateScanner(format % conjunction)
+			predicate = scanner.parsePredicate()
+			self.assertIsInstance(predicate, predicates.CompoundPredicate)
+			self.assertEqual(predicate.compoundPredicateType, predicate_type)
+			self.assertTrue(scanner.atEnd)
+
+	def testParseNotCompoundPredicate(self):
+		format = '%s (TRUEPREDICATE)'
+		for keyword in ('NOT', '!'):
+			scanner = PredicateScanner(format % keyword)
+			predicate = scanner.parsePredicate()
+			self.assertIsInstance(predicate, predicates.CompoundPredicate)
+			self.assertEqual(predicate.compoundPredicateType, predicates.CompoundPredicateType.Not)
+			self.assertTrue(scanner.atEnd)
+
+	def testParseAggregateComparisonPredicate(self):
+		format = '%s children.age < 18'
+		for keyword, modifier, negate in (
+			('ANY', predicates.ComparisonPredicateModifier.Any, False),
+			('ALL', predicates.ComparisonPredicateModifier.All, False),
+			('NONE', predicates.ComparisonPredicateModifier.Any, True),
+			('SOME', predicates.ComparisonPredicateModifier.All, True),
+		):
+			scanner = PredicateScanner(format % keyword)
+			predicate = scanner.parsePredicate()
+			if negate:
+				self.assertIsInstance(predicate, predicates.CompoundPredicate)
+				self.assertEqual(predicate.compoundPredicateType, predicates.CompoundPredicateType.Not)
+				predicate = predicate.subpredicates[0]
+			self.assertIsInstance(predicate, predicates.ComparisonPredicate)
+			self.assertEqual(predicate.modifier, modifier)
+			self.assertTrue(scanner.atEnd)
+
+	def testParseBasicComparisonPredicate(self):
+		format = 'value %s 1'
+		for keyword, predicate_type in (
+			('<=', predicates.ComparisonPredicateType.LessThanOrEqual),
+			('=<', predicates.ComparisonPredicateType.LessThanOrEqual),
+			('>=', predicates.ComparisonPredicateType.GreaterThanOrEqual),
+			('=>', predicates.ComparisonPredicateType.GreaterThanOrEqual),
+			('==', predicates.ComparisonPredicateType.EqualTo),
+			('!=', predicates.ComparisonPredicateType.NotEqualTo),
+			('<>', predicates.ComparisonPredicateType.NotEqualTo),
+			('<', predicates.ComparisonPredicateType.LessThan),
+			('>', predicates.ComparisonPredicateType.GreaterThan),
+			('=', predicates.ComparisonPredicateType.EqualTo),
+			('MATCHES', predicates.ComparisonPredicateType.Matches),
+			('LIKE', predicates.ComparisonPredicateType.Like),
+			('BEGINSWITH', predicates.ComparisonPredicateType.BeginsWith),
+			('ENDSWITH', predicates.ComparisonPredicateType.EndsWith),
+			('IN', predicates.ComparisonPredicateType.In),
+			('CONTAINS', predicates.ComparisonPredicateType.Contains),
+			('BETWEEN', predicates.ComparisonPredicateType.Between)
+		):
+			scanner = PredicateScanner(format % keyword)
+			predicate = scanner.parsePredicate()
+			self.assertIsInstance(predicate, predicates.ComparisonPredicate)
+			self.assertEqual(predicate.modifier, predicates.ComparisonPredicateModifier.Direct)
+			self.assertEqual(predicate.operatorType, predicate_type)
+			self.assertTrue(scanner.atEnd)
+
+	def testParseComparisonPredicateOptions(self):
+		format = 'value ==%s 1'
+		for keyword, options in (
+			('[cd]', predicates.ComparisonPredicateOptions.CaseInsensitive | predicates.ComparisonPredicateOptions.DiacriticInsensitive),
+			('[c]', predicates.ComparisonPredicateOptions.CaseInsensitive),
+			('[d]', predicates.ComparisonPredicateOptions.DiacriticInsensitive)
+		):
+			scanner = PredicateScanner(format % keyword)
+			predicate = scanner.parsePredicate()
+			self.assertIsInstance(predicate, predicates.ComparisonPredicate)
+			self.assertEqual(predicate.options, options)
+			self.assertTrue(scanner.atEnd)
