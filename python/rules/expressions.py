@@ -115,7 +115,9 @@ class Expression(object):
 
 	@staticmethod
 	def expressionWithFormat(format, **args):
-		pass
+		from .scanners import ExpressionScanner
+		scanner = ExpressionScanner(format)
+		return scanner.parseExpression()
 		
 	# Initializing an Expression
 

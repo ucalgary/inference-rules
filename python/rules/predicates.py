@@ -47,7 +47,9 @@ class Predicate(object):
 
 	@staticmethod
 	def predicateWithFormat(format, **args):
-		pass
+		from .scanners import PredicateScanner
+		scanner = PredicateScanner(format)
+		return scanner.parsePredicate()
 
 	@staticmethod
 	def predicateWithValue(value):
