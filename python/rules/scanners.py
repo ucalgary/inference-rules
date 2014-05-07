@@ -8,7 +8,7 @@ class Scanner(object):
 	def __init__(self, string):
 		self._string = string
 		self._scanLocation = 0
-		self._charactersToBeSkipped = ()
+		self._charactersToBeSkipped = {'\t', '\n', '\v', '\f', '\r', ' ', u'\0085', u'\00a0'}
 		self._caseSensitive = False
 
 	# Getting a Scanner's String
