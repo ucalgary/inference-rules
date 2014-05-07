@@ -89,12 +89,12 @@ class Predicate(object):
 
 class ComparisonPredicate(Predicate):
 	
-	def __init__(self, leftExpression, rightExpression, modifier=ComparisonPredicateModifier.Direct, type=ComparisonPredicateType.EqualTo, **options):
+	def __init__(self, leftExpression, rightExpression, modifier=ComparisonPredicateModifier.Direct, type=ComparisonPredicateType.EqualTo, options=0):
 		from .operators import ComparisonPredicateOperator
 
 		self._leftExpression = leftExpression
 		self._rightExpression = rightExpression
-		self._operator = ComparisonPredicateOperator(type, modifier, **options)
+		self._operator = ComparisonPredicateOperator(type, modifier, options)
 	
 	@property
 	def leftExpression(self):
@@ -126,7 +126,7 @@ class CompoundPredicate(Predicate):
 		from .operators import CompoundPredicateOperator
 
 		self._subpredicates = subpredicates
-		self._operator = CompoundPredicateOperator(type, 0)
+		self._operator = CompoundPredicateOperator(type, 0, 0)
 
 	@property
 	def compoundPredicateType(self):

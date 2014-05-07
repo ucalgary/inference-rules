@@ -7,7 +7,7 @@ from . import predicates
 
 class PredicateOperator(object):
 
-	def __init__(self, operatorType, modifier, **options):
+	def __init__(self, operatorType, modifier, options):
 		self._operatorType = operatorType
 		self._modifier = modifier
 		self._options = options
