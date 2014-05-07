@@ -27,6 +27,13 @@ class ComparisonPredicateType(object):
 	Between = 13
 
 
+class ComparisonPredicateOptions(object):
+
+	CaseInsensitive = 1
+	DiacriticInsensitive = 2
+	Normalized = 4
+
+
 class CompoundPredicateType(object):
 
 	Not = 0
