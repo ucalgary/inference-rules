@@ -193,14 +193,15 @@ class ExpressionScanner(Scanner):
 			return arg
 		if self.scanString('{'):
 			if self.scanString('}'):
-				return Expression.expressionForConstantValue([])
+				return Expression.expressionForAggregate([])
 			a = []
 			a.append(self.parseExpression())
 			while self.scanString(','):
-				a.append(self.parseExpression())
+				e = self.parseExpression()
+				a.append(e)
 			if not self.scanString('}'):
 				raise ValueError('Missing } in aggregate')
-			return Expression.expressionForConstantValue(a)
+			return Expression.expressionForAggregate(a)
 		if self.scanString('NULL') or self.scanString('NIL'):
 			return Expression.expressionForConstantValue(None)
 		if self.scanString('TRUE') or self.scanString('YES'):
