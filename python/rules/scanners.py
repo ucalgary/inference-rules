@@ -381,12 +381,21 @@ class PredicateScanner(ExpressionScanner):
 	def parseConjunction(self):
 		l = self.parseNot()
 
-		while any(self.scanPredicateKeyword(keyword) for keyword, predicate_type in (
-			('AND', CompoundPredicateType.And),
-			('&&', CompoundPredicateType.And),
-			('OR', CompoundPredicateType.Or),
-			('||', CompoundPredicateType.Or)
-		)):
+		predicate_type_container = [-1,]
+		def hasKeyword():
+			for keyword, predicate_type_i in (
+				('AND', CompoundPredicateType.And),
+				('&&', CompoundPredicateType.And),
+				('OR', CompoundPredicateType.Or),
+				('||', CompoundPredicateType.Or)
+			):
+				if self.scanPredicateKeyword(keyword):
+					predicate_type_container[0] = predicate_type_i
+					return True
+				return False
+
+		while hasKeyword():
+			predicate_type = predicate_type_container[0]
 			r = self.parseNot()
 
 			if isinstance(r, CompoundPredicate) and r.compoundPredicateType == predicate_type:
