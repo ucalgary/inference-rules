@@ -1,6 +1,11 @@
 # coding=utf-8
 
+import string
+
 from .expressions import Expression
+from .predicates import ComparisonPredicateModifier, ComparisonPredicateType, ComparisonPredicateOptions
+from .predicates import CompoundPredicateType
+from .predicates import Predicate, ComparisonPredicate, CompoundPredicate
 
 
 class Scanner(object):
@@ -350,19 +355,125 @@ class ExpressionScanner(Scanner):
 				return left
 
 
-class PredicateScanner(Scanner):
+class PredicateScanner(ExpressionScanner):
+
+	def scanPredicateKeyword(self, key):
+		loc = self.scanLocation
+		self.caseSensitive = False
+
+		if not self.scanString(key):
+			return False
+		if self.atEnd:
+			return True
+
+		# Does the next character still belong to the token?
+		c = self.string[self.scanLocation]
+		if not (c in string.letters or c in string.digits):
+			return True
+
+		# Back up, no match
+		self.scanLocation = loc
+		return False
 
 	def parsePredicate(self):
-		return self.parseAnd()
+		return self.parseConjunction()
 
-	def parseAnd(self):
-		pass
+	def parseConjunction(self):
+		l = self.parseNot()
+
+		while any(self.scanPredicateKeyword(keyword) for keyword, predicate_type in (
+			('AND', CompoundPredicateType.And),
+			('&&', CompoundPredicateType.And),
+			('OR', CompoundPredicateType.Or),
+			('||', CompoundPredicateType.Or)
+		)):
+			r = self.parseNot()
+
+			if isinstance(r, CompoundPredicate) and r.compoundPredicateType == predicate_type:
+				if isinstance(l, CompoundPredicate) and l.compoundPredicateType == predicate_type:
+					subpredicates = l.subpredicates + r.subpredicates
+				else:
+					subpredicates = r.subpredicates + [l]
+			elif isinstance(l, CompoundPredicate) and l.compoundPredicateType == predicate_type:
+				subpredicates = l.subpredicates + [r]
+			else:
+				subpredicates = [l, r]
+
+			l = CompoundPredicate(subpredicates, type=predicate_type)
+
+		return l
 
 	def parseNot(self):
-		pass
+		if self.scanString('('):
+			r = self.parsePredicate()
+			if not self.scanString(')'):
+				raise ValueError('Missing ) in compound predicate')
+			return r
 
-	def parseOr(self):
-		pass
+		if self.scanPredicateKeyword('NOT') or self.scanPredicateKeyword('!'):
+			return CompoundPredicate((self.parseNot(),), type=CompoundPredicateType.Not)
+
+		for keyword, value in (
+			('TRUEPREDICATE', True),
+			('FALSEPREDICATE', False)
+		):
+			if self.scanPredicateKeyword(keyword):
+				return Predicate.predicateWithValue(value)
+		
+		return self.parseComparison()
 
 	def parseComparison(self):
-		pass
+		for keyword, predicate_modifier, negate in (
+			('ANY', ComparisonPredicateModifier.Any, False),
+			('ALL', ComparisonPredicateModifier.All, False),
+			('NONE', ComparisonPredicateModifier.Any, True),
+			('SOME', ComparisonPredicateModifier.All, True),
+			('', ComparisonPredicateModifier.Direct, False)
+		):
+			if not keyword or self.scanPredicateKeyword(keyword):
+				break
+
+		left = self.parseExpression()
+
+		for keyword, predicate_type in (
+			('<=', ComparisonPredicateType.LessThanOrEqual),
+			('=<', ComparisonPredicateType.LessThanOrEqual),
+			('>=', ComparisonPredicateType.GreaterThanOrEqual),
+			('=>', ComparisonPredicateType.GreaterThanOrEqual),
+			('==', ComparisonPredicateType.EqualTo),
+			('!=', ComparisonPredicateType.NotEqualTo),
+			('<>', ComparisonPredicateType.NotEqualTo),
+			('<', ComparisonPredicateType.LessThan),
+			('>', ComparisonPredicateType.GreaterThan),
+			('=', ComparisonPredicateType.EqualTo),
+			('MATCHES', ComparisonPredicateType.Matches),
+			('LIKE', ComparisonPredicateType.Like),
+			('BEGINSWITH', ComparisonPredicateType.BeginsWith),
+			('ENDSWITH', ComparisonPredicateType.EndsWith),
+			('IN', ComparisonPredicateType.In),
+			('CONTAINS', ComparisonPredicateType.Contains),
+			('BETWEEN', ComparisonPredicateType.Between),
+			('', 99)
+		):
+			if not keyword or self.scanPredicateKeyword(keyword):
+				break
+		
+		if predicate_type == 99:
+			raise ValueError('Invalid comparison predicate: %s' % self.string[self.scanLocation:])
+
+		for opt_string, options in (
+			('[cd]', ComparisonPredicateOptions.CaseInsensitive | ComparisonPredicateOptions.DiacriticInsensitive),
+			('[c]', ComparisonPredicateOptions.CaseInsensitive),
+			('[d]', ComparisonPredicateOptions.DiacriticInsensitive),
+			('', 0)
+		):
+			if not opt_string or self.scanString(opt_string):
+				break
+
+		right = self.parseExpression()
+
+		predicate = ComparisonPredicate(left, right, modifier=predicate_modifier, type=predicate_type, options=options)
+		if negate:
+			predicate = CompoundPredicate((predicate,), type=CompoundPredicateType.Not)
+
+		return predicate
