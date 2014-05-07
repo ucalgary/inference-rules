@@ -89,7 +89,7 @@ class Predicate(object):
 
 class ComparisonPredicate(Predicate):
 	
-	def __init__(self, leftExpression, rightExpression, type=ComparisonPredicateType.EqualTo, modifier=ComparisonPredicateModifier.Direct, **options):
+	def __init__(self, leftExpression, rightExpression, modifier=ComparisonPredicateModifier.Direct, type=ComparisonPredicateType.EqualTo, **options):
 		from .operators import ComparisonPredicateOperator
 
 		self._leftExpression = leftExpression
