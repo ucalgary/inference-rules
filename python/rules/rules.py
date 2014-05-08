@@ -50,7 +50,7 @@ class Rule(object):
 		return priority
 
 
-class RuleModel(object):
+class Model(object):
 	
 	def __init__(self, rules=None):
 		self._rules = rules
