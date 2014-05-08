@@ -2,6 +2,7 @@
 
 import string
 
+from . import characters
 from .expressions import Expression
 from .predicates import ComparisonPredicateModifier, ComparisonPredicateType, ComparisonPredicateOptions
 from .predicates import CompoundPredicateType
@@ -13,7 +14,7 @@ class Scanner(object):
 	def __init__(self, string):
 		self._string = string
 		self._scanLocation = 0
-		self._charactersToBeSkipped = {'\t', '\n', '\v', '\f', '\r', ' ', u'\0085', u'\00a0'}
+		self._charactersToBeSkipped = characters.ScannerCharactersToBeSkippedCharacterSet
 		self._caseSensitive = False
 
 	# Getting a Scanner's String
@@ -179,11 +180,10 @@ class ExpressionScanner(Scanner):
 
 	def parseIdentifierExpression(self):
 		self.scanString('#')
-		ident = self.scanCharactersFromSet(self.parseIdentifierExpression._identifier)
+		ident = self.scanCharactersFromSet(characters.IdentifierExpressionCharacterSet)
 		if not ident:
 			raise ValueError('Missing identifier: %s' % self.string[self.scanLocation:])
 		return Expression.expressionForKeyPath(ident)
-	parseIdentifierExpression._identifier = '_$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 	def parseSimpleExpression(self):
 		dbl = self.scanFloat()
