@@ -171,7 +171,11 @@ class Scanner(object):
 		return self.scanWithParseFunction(__builtin__.int)
 
 	def isAtEnd(self):
-		return self.scanLocation == len(self.string)
+		location = self.scanLocation
+		self._movePastCharactersToBeSkipped()
+		ret = self.scanLocation >= len(self.string)
+		self.scanLocation = location
+		return ret
 	atEnd = property(isAtEnd)
 
 
