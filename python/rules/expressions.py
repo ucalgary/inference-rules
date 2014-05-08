@@ -164,6 +164,19 @@ class ConstantValueExpression(Expression):
 	def expressionValueWithObject(self, object, context=None):
 		return self.constantValue
 
+	# Getting Representations
+
+	def __str__(self):
+		return '%s' % (
+			repr(self.constantValue)
+		)
+
+	def __repr__(self):
+		return '<%s> %s' % (
+			self.__class__.__name__,
+			self.__str__()
+		)
+
 class SelfExpression(Expression):
 
 	def __init__(self):
@@ -171,6 +184,17 @@ class SelfExpression(Expression):
 
 	def expressionValueWithObject(self, object, context=None):
 		return object
+
+	# Getting Representations
+
+	def __str__(self):
+		return 'SELF'
+
+	def __repr__(self):
+		return '<%s> %s' % (
+			self.__class__.__name__,
+			self.__str__()
+		)
 
 class VariableExpression(Expression):
 
@@ -186,6 +210,19 @@ class VariableExpression(Expression):
 	def expressionValueWithObject(self, object, context=None):
 		return None # return from the variable bindings dictionary the value for the key variable
 
+	# Getting Representations
+
+	def __str__(self):
+		return '%s' % (
+			self.variable
+		)
+
+	def __repr__(self):
+		return '<%s> %s' % (
+			self.__class__.__name__,
+			self.__str__()
+		)
+
 class AggregateExpression(Expression):
 
 	def __init__(self, collection):
@@ -199,6 +236,19 @@ class AggregateExpression(Expression):
 
 	def expressionValueWithObject(self, object, context=None):
 		return map(lambda e: e.expressionValueWithObject(object, context=context), self.collection)
+
+	# Getting Representations
+
+	def __str__(self):
+		return '%s' % (
+			self.collection
+		)
+
+	def __repr__(self):
+		return '<%s> %s' % (
+			self.__class__.__name__,
+			self.__str__()
+		)
 
 class SetExpression(Expression):
 
@@ -235,6 +285,21 @@ class SetExpression(Expression):
 		expressionFunction = getattr(leftValue, expressionFunctionName)
 
 		return expressionFunction(rightValue)
+
+	# Getting Representations
+
+	def __str__(self):
+		return '%s %s %s' % (
+			self.leftExpression,
+			self.expressionFunctionName,
+			self.rightExpression
+		)
+
+	def __repr__(self):
+		return '<%s> %s' % (
+			self.__class__.__name__,
+			self.__str__()
+		)
 
 class FunctionExpression(Expression):
 
@@ -283,3 +348,16 @@ class KeyPathExpression(FunctionExpression):
 	@property
 	def keyPath(self):
 		return self.pathExpression.constantValue
+
+	# Getting Representations
+
+	def __str__(self):
+		return '%s' % (
+			self.keyPath
+		)
+
+	def __repr__(self):
+		return '<%s> %s' % (
+			self.__class__.__name__,
+			self.__str__()
+		)

@@ -8,6 +8,12 @@ class ComparisonPredicateModifier(object):
 	All = 1
 	Any = 2
 
+	_str = {
+		Direct: '',
+		All: 'ALL',
+		Any: 'ANY'
+	}
+
 
 class ComparisonPredicateType(object):
 
@@ -26,6 +32,23 @@ class ComparisonPredicateType(object):
 	Contains = 12
 	Between = 13
 
+	_str = {
+		LessThan: '<',
+		LessThanOrEqual: '<=',
+		GreaterThan: '>',
+		GreaterThanOrEqual: '>=',
+		EqualTo: '==',
+		NotEqualTo: '!=',
+		Matches: 'MATCHES',
+		Like: 'LIKE',
+		BeginsWith: 'BEGINSWITH',
+		EndsWith: 'ENDSWITH',
+		In: 'IN',
+		CustomSelector: 'SEL',
+		Contains: 'CONTAINS',
+		Between: 'BETWEEN'
+	}
+
 
 class ComparisonPredicateOptions(object):
 
@@ -39,6 +62,12 @@ class CompoundPredicateType(object):
 	Not = 0
 	And = 1
 	Or = 2
+
+	_str = {
+		Not: 'NOT',
+		And: 'AND',
+		Or: 'OR'
+	}
 
 
 class Predicate(object):
@@ -126,6 +155,22 @@ class ComparisonPredicate(Predicate):
 
 		return self._operator.performOperationUsingObjects(leftValue, rightValue)
 
+	# Getting Representations
+
+	def __str__(self):
+		return ('%s %s %s %s' % (
+			ComparisonPredicateModifier._str.get(self.modifier, 'UNKNOWN'),
+			self.leftExpression,
+			ComparisonPredicateType._str.get(self.operatorType, 'UNKNOWN'),
+			self.rightExpression
+		)).lstrip()
+
+	def __repr__(self):
+		return '<%s> %s' % (
+			self.__class__.__name__,
+			self.__str__()
+		)
+
 class CompoundPredicate(Predicate):
 
 	def __init__(self, subpredicates, type=CompoundPredicateType.And):
@@ -147,6 +192,19 @@ class CompoundPredicate(Predicate):
 	def evaluateWithObject(self, obj):
 		return self._operator.evaluatePredicatesWithObject(self.subpredicates, obj)
 
+	# Getting Representations
+
+	def __str__(self):
+		return '%s' % (
+			self.subpredicates
+		)
+
+	def __repr__(self):
+		return '<%s> %s' % (
+			self.__class__.__name__,
+			self.__str__()
+		)
+
 class ValuePredicate(Predicate):
 
 	def __init__(self, value):
@@ -160,6 +218,17 @@ class ValuePredicate(Predicate):
 
 	def evaluateWithObject(self, obj):
 		return self.value
+
+	# Getting Representations
+
+	def __str__(self):
+		return 'TRUE' if self.value else 'FALSE'
+
+	def __repr__(self):
+		return '<%s> %s' % (
+			self.__class__.__name__,
+			self.__str__()
+		)
 
 TruePredicate = ValuePredicate(True)
 FalsePredicate = ValuePredicate(False)
