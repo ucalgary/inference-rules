@@ -65,6 +65,8 @@ class Scanner(object):
 		if self.atEnd:
 			return None
 
+		self._movePastCharactersToBeSkipped()
+
 		current = self.scanLocation
 		result = None
 
