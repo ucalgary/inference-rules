@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import itertools
 import string
 
 from . import characters
@@ -7,6 +8,7 @@ from .expressions import Expression
 from .predicates import ComparisonPredicateModifier, ComparisonPredicateType, ComparisonPredicateOptions
 from .predicates import CompoundPredicateType
 from .predicates import Predicate, ComparisonPredicate, CompoundPredicate
+from .rules import Rule, Model
 
 
 class Scanner(object):
@@ -494,3 +496,87 @@ class PredicateScanner(ExpressionScanner):
 			predicate = CompoundPredicate((predicate,), type=CompoundPredicateType.Not)
 
 		return predicate
+
+
+class ModelScanner(PredicateScanner):
+
+	def parseModel(self):
+		rules = self.parseRuleset()
+		model = Model(rules=rules)
+
+		return model
+
+	def parseRuleset(self, parent_specifiers=None):
+		# Scan the specifiers (one or more Predicates)
+		specifiers = self.parseSpecifierFormats()
+		if not specifiers:
+			raise ValueError('Expected specifier')
+
+		# Expecting opening {
+		if not self.scanString('{'):
+			raise ValueError('Expected { after specifiers: %s' % specifiers)
+		
+		# Scan 0 or more declarations and nested rulesets
+		declarations = []
+		nested_rules = []
+		expect_more = True
+		while (expect_more):
+			try:
+				mark = self.scanLocation
+				declarations.append(self.parseDeclaration())
+				if not self.scanString(';'):
+					expect_more = False
+			except ValueError as declaration_e:
+				self.scanLocation = mark
+				try:
+					nested_rules.extend(self.parseRuleset(parent_specifiers=specifiers))
+				except ValueError as e:
+
+					expect_more = False
+
+		# Expecting closing }
+		if not self.scanString('}'):
+			raise ValueError('Expected to find }')
+
+		# Process the scanned specifiers. If there are parent specifiers,
+		# the local specifiers should be compounded with each parent
+		# specifier with an AND.
+		if parent_specifiers:
+			specifiers = [' AND '.join(str(s) for s in spec) \
+				for spec in itertools.product(parent_specifiers, specifiers)]
+
+		# For each specifier and declaration, create a rule
+		rules = [Rule(Predicate.predicateWithFormat(spec), decl[0], decl[1]) \
+			for spec, decl in itertools.product(specifiers, declarations)]
+		rules.extend(nested_rules)
+
+		return rules
+
+	def parseSpecifierFormats(self):
+		specifiers = []
+		expect_more = True
+
+		while expect_more:
+			mark = self.scanLocation
+			try:
+				predicate = self.parsePredicate()
+			except ValueError as e:
+				return None
+			predicateFormat = self.string[mark:self.scanLocation]
+			predicateFormat = predicateFormat.strip(''.join(self.charactersToBeSkipped))
+			specifiers.append(predicateFormat)
+			expect_more = self.scanString(',') is not None
+		
+		return specifiers
+
+	def parseDeclaration(self):
+		key = self.scanCharactersFromSet(characters.PropertyKeyCharacterSet)
+		if not key:
+			raise ValueError('Could not scan property key')
+		if not self.scanString(':'):
+			raise ValueError('Expected colon after property key: %s' % key)
+		expr = self.parseExpression()
+		if not expr:
+			raise ValueError('Could not parse expression value for key: %s' % key)
+		return (key, expr)
+
