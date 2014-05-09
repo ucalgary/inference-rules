@@ -55,6 +55,20 @@ class Rule(object):
 		self._priority = priority
 		return priority
 
+	def __str__(self):
+		return '%s %s: %s [%i]' % (
+			self.specifier,
+			self.key,
+			self.value,
+			self.weight
+		)
+
+	def __repr__(self):
+		return '<%s> %s' % (
+			self.__class__.__name__,
+			self.__str__()
+		)
+
 
 class Model(object):
 	
