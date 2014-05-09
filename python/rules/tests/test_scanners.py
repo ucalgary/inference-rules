@@ -255,12 +255,63 @@ class ModelScannerTest(unittest.TestCase):
 		return scanner, model
 
 	def test0001SimpleModel(self):
-		self._testModelData('0001-simple-model.irl')
+		# Expecting 1 rule
+		# TRUEPREDICATE { key1: '1' }
+		scanner, model = self._testModelData('0001-simple-model.irl')
+		self.assertEqual(len(model.rules), 1)
+		
+		rule = model.rules[0]
+		self.assertIsInstance(rule.specifier, predicates.ValuePredicate)
+		self.assertTrue(rule.specifier.value)
+
+		self.assertEqual(rule.key, 'key1')
+		self.assertEqual(rule.value.constantValue, '1')
 
 	def test0002TwoSpecifiers(self):
-		self._testModelData('0002-two-specifiers.irl')
+		# Expecting 2 rules
+		# TRUEPREDICATE { key1: '1' }
+		# FALSEPREDICATE { key1: '1' }
+		scanner, model = self._testModelData('0002-two-specifiers.irl')
+		self.assertEqual(len(model.rules), 2)
+
+		rule = model.rules[0]
+		self.assertIsInstance(rule.specifier, predicates.ValuePredicate)
+		self.assertTrue(rule.specifier.value)
+		self.assertEqual(rule.key, 'key1')
+		self.assertEqual(rule.value.constantValue, '1')
+
+		rule = model.rules[1]
+		self.assertIsInstance(rule.specifier, predicates.ValuePredicate)
+		self.assertFalse(rule.specifier.value)
+
+		self.assertEqual(rule.key, 'key1')
+		self.assertEqual(rule.value.constantValue, '1')
 
 	def test0003SubRuleset(self):
-		self._testModelData('0003-sub-ruleset.irl')
+		# Expecting 2 rules
+		# TRUEPREDICATE { key1: '1' }
+		# TRUEPREDICATE AND FALSEPREDICATE { key2: '2' }
+		scanner, model = self._testModelData('0003-sub-ruleset.irl')
+		self.assertEqual(len(model.rules), 2)
 
-		
+		rule = model.rules[0]
+		self.assertIsInstance(rule.specifier, predicates.ValuePredicate)
+		self.assertTrue(rule.specifier.value)
+		self.assertEqual(rule.key, 'key1')
+		self.assertEqual(rule.value.constantValue, '1')
+
+		rule = model.rules[1]
+		self.assertIsInstance(rule.specifier, predicates.CompoundPredicate)
+		self.assertEqual(rule.specifier.compoundPredicateType, predicates.CompoundPredicateType.And)
+		self.assertEqual(len(rule.specifier.subpredicates), 2)
+
+		predicate = rule.specifier.subpredicates[0]
+		self.assertIsInstance(predicate, predicates.ValuePredicate)
+		self.assertTrue(predicate.value)
+
+		predicate = rule.specifier.subpredicates[1]
+		self.assertIsInstance(predicate, predicates.ValuePredicate)
+		self.assertFalse(predicate.value)
+
+		self.assertEqual(rule.key, 'key2')
+		self.assertEqual(rule.value.constantValue, '2')		
