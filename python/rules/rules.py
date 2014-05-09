@@ -95,3 +95,8 @@ class Model(object):
 	def candidates(self, keyPath, context):
 		return self._buckets.get(keyPath)
 
+	def __str__(self):
+		return '%s' % (
+			self.rules
+		)
+
