@@ -15,6 +15,9 @@ class Rule(object):
 		if value == None:
 			value = expressions.Expression.expressionForConstantValue(None)
 
+		assert isinstance(specifier, predicates.Predicate), 'specifier is not a Predicate: %s' % str(specifier)
+		assert isinstance(value, expressions.Expression), 'value is not an Expression: %s' % str(value)
+
 		self._specifier = specifier # Condition (Predicate)
 		self._key = key             # Key (String)
 		self._value = value         # Value (Expression)
