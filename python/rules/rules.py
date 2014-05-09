@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from . import predicate
+from . import predicates
 
 DefaultModel = None
 
@@ -37,10 +37,11 @@ class Rule(object):
 		return 0
 
 	def canFireInContext(self, context):
-		return self.specifier.evaluateWithObject(context) if self.specifier not None else True
+		return self.specifier.evaluateWithObject(context) if self.specifier else True
 
 	def fire(self, context):
-		assert self.value is not None
+		if self.value is None:
+			return None
 		return self.value.expressionValueWithObject(context)
 
 	def priority(self):
@@ -48,7 +49,7 @@ class Rule(object):
 			return self._priority
 
 		priority = self.weight
-		if isinstance(self.specifier, predicate.CompoundPredicate)
+		if isinstance(self.specifier, predicate.CompoundPredicate):
 			priority += len(self.specifier.subpredicates)
 
 		self._priority = priority
