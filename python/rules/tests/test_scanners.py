@@ -1,8 +1,9 @@
+import pkg_resources
 import string
 import unittest
 
 from .. import expressions, predicates
-from ..scanners import Scanner, ExpressionScanner, PredicateScanner
+from ..scanners import Scanner, ExpressionScanner, PredicateScanner, ModelScanner
 
 class ScannerTest(unittest.TestCase):
 
@@ -242,3 +243,24 @@ class PredicateScannerTest(unittest.TestCase):
 			self.assertIsInstance(predicate, predicates.ComparisonPredicate)
 			self.assertEqual(predicate.options, options)
 			self.assertTrue(scanner.atEnd)
+
+
+class ModelScannerTest(unittest.TestCase):
+
+	def _testModelData(self, data_name):
+		data = pkg_resources.resource_string('rules.tests.data', data_name)
+		scanner = ModelScanner(data)
+		model = scanner.parseModel()
+
+		return scanner, model
+
+	def test0001SimpleModel(self):
+		self._testModelData('0001-simple-model.irl')
+
+	def test0002TwoSpecifiers(self):
+		self._testModelData('0002-two-specifiers.irl')
+
+	def test0003SubRuleset(self):
+		self._testModelData('0003-sub-ruleset.irl')
+
+		

@@ -1,0 +1,7 @@
+TRUEPREDICATE {
+	key1: '1';
+	
+	FALSEPREDICATE {
+		key2: '2';
+	}
+}
