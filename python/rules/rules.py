@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from . import predicates
+from . import expressions, predicates
 
 DefaultModel = None
 
@@ -9,6 +9,11 @@ class Rule(object):
 	def __init__(self, specifier, key, value, weight=0):
 		if key is None:
 			raise ValueError('key cannot be None')
+
+		if specifier == None:
+			specifier = predicates.Predicate.predicateWithValue(True)
+		if value == None:
+			value = expressions.Expression.expressionForConstantValue(None)
 
 		self._specifier = specifier # Condition (Predicate)
 		self._key = key             # Key (String)
