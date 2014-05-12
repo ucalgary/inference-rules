@@ -24,6 +24,8 @@ class Rule(object):
 		self._weight = weight
 		self._priority = -1
 
+		self._calculatePriority()
+
 	@property
 	def specifier(self):
 		return self._specifier
@@ -42,6 +44,23 @@ class Rule(object):
 
 	@property
 	def priority(self):
+		return self._priority
+
+	def _calculatePriority(self):
+		priority = self._priorityForPredicate(self.specifier)
+		if self.weight != 0:
+			priority += self.weight * 1000
+		self._priority = priority
+
+	def _priorityForPredicate(self, predicate):
+		if not predicate:
+			return 0
+		if isinstance(predicate, predicates.ComparisonPredicate):
+			return 1
+		if isinstance(predicate, predicates.CompoundPredicate):
+			return sum(self._priorityForPredicate(p) for p in predicate.subpredicates)
+		if isinstance(predicate, predicates.ValuePredicate):
+			return 1
 		return 0
 
 	def canFireInContext(self, context):
@@ -51,17 +70,6 @@ class Rule(object):
 		if self.value is None:
 			return None
 		return self.value.expressionValueWithObject(context)
-
-	def priority(self):
-		if self._priority is not -1:
-			return self._priority
-
-		priority = self.weight
-		if isinstance(self.specifier, predicate.CompoundPredicate):
-			priority += len(self.specifier.subpredicates)
-
-		self._priority = priority
-		return priority
 
 	def __str__(self):
 		return '%s %s: %s [%i]' % (
