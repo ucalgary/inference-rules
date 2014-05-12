@@ -183,6 +183,27 @@ class Scanner(object):
 
 class ExpressionScanner(Scanner):
 
+	def __init__(self, string):
+		super(ExpressionScanner, self).__init__(string)
+		self._lineNumber = 1
+		self._maxScanLocation = 0
+
+	@property
+	def lineNumber(self):
+		return self._lineNumber
+
+	def _movePastCharactersToBeSkipped(self):
+		loc1 = self.scanLocation
+		super(ExpressionScanner, self)._movePastCharactersToBeSkipped()
+		loc2 = self.scanLocation
+
+		loc1 = max(loc1, self._maxScanLocation)
+		loc2 = max(loc2, self._maxScanLocation)
+		if loc2 > loc1:
+			self._lineNumber += self.string[loc1:loc2].count('\n')
+		if loc2 > self._maxScanLocation:
+			self._maxScanLocation = loc2
+
 	def parseExpression(self):
 		return self.parseBinaryExpression()
 
