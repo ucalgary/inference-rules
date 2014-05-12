@@ -522,9 +522,16 @@ class PredicateScanner(ExpressionScanner):
 class ModelScanner(PredicateScanner):
 
 	def parseModel(self):
-		rules = self.parseRuleset()
+		rules = []
+		expect_more = True
+		while expect_more:
+			try:
+				rules.extend(self.parseRuleset())
+			except:
+				expect_more = False
 		model = Model(rules=rules)
-
+		if not self.atEnd:
+			raise ValueError('Failed to parse past line %i' % self.lineNumber)
 		return model
 
 	def parseRuleset(self, parent_specifiers=None):
