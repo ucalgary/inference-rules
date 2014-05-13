@@ -173,7 +173,7 @@ class Model(object):
 
 	@property
 	def inferrableKeys(self):
-		return None
+		return self._buckets.keys()
 
 	def candidates(self, keyPath, context):
 		return self._buckets.get(keyPath)
