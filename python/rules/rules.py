@@ -1,5 +1,8 @@
 # coding=utf-8
 
+import bisect
+import itertools
+
 from . import expressions, predicates
 
 DefaultModel = None
@@ -117,10 +120,35 @@ class Model(object):
 	def __init__(self, rules=None):
 		self._rules = rules
 		self._buckets = {}
+		self._bucketsAreValid = False
+		self._sortRulesIntoBuckets()
 
 	@property
 	def rules(self):
 		return self._rules
+
+	def _invalidateCaches(self):
+		self._buckets = {}
+		self._bucketsAreValid = False
+
+	def _sortRulesIntoBuckets(self):
+		self._invalidateCaches()
+
+		# Group the rules by key, sorted by priority
+		for key, group in itertools.groupby(self.rules, key=lambda x: x.key):
+			if not key in self._buckets:
+				bucket = []
+				self._buckets[key] = bucket
+			else:
+				bucket = self._buckets[key]
+
+			for rule in group:
+				bisect.insort_left(bucket, rule)
+
+		# Reverse the order of the buckets, so most specific specifiers are first
+		[bucket.reverse() for bucket in self._buckets.values()]
+
+		self._bucketsAreValid = True
 
 	@property
 	def inferrableKeys(self):
@@ -133,4 +161,3 @@ class Model(object):
 		return '%s' % (
 			self.rules
 		)
-
