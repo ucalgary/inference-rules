@@ -85,6 +85,32 @@ class Rule(object):
 			self.__str__()
 		)
 
+	# Rich Comparison Operators
+
+	def __eq__(self, other):
+		if not isinstance(other, self.__class__):
+			return False
+
+		return self.specifier == other.speciifer and \
+		       self.key == other.key and \
+		       self.value == other.value and \
+		       self.weight == other.weight
+
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
+	def __gt__(self, other):
+		return self.priority > other.priority
+
+	def __ge__(self, other):
+		return self.priority >= other.priority
+
+	def __lt__(self, other):
+		return self.priority < other.priority
+
+	def __le__(self, other):
+		return self.priority <= other.priority
+		
 
 class Model(object):
 	
