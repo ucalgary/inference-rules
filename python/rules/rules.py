@@ -2,6 +2,7 @@
 
 import bisect
 import itertools
+import urllib2
 
 from . import expressions, predicates
 
@@ -113,7 +114,7 @@ class Rule(object):
 
 	def __le__(self, other):
 		return self.priority <= other.priority
-		
+
 
 class Model(object):
 	
@@ -122,6 +123,26 @@ class Model(object):
 		self._buckets = {}
 		self._bucketsAreValid = False
 		self._sortRulesIntoBuckets()
+
+	# Creating Models
+
+	@staticmethod
+	def modelFromFile(path):
+		with open(path, 'r') as f:
+			return Model._modelFromFileObj(f)
+
+	@staticmethod
+	def modelFromURL(url):
+		f = urllib2.urlopen(url)
+		return Model._modelFromFileObj(f)
+
+	@staticmethod
+	def _modelFromFileObj(f):
+		from .scanners import ModelScanner
+		
+		data = f.read()
+		scanner = ModelScanner(data)
+		return scanner.parseModel()
 
 	@property
 	def rules(self):
