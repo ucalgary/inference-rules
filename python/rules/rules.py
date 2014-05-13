@@ -56,9 +56,9 @@ class Rule(object):
 		if not predicate:
 			return 0
 		if isinstance(predicate, predicates.ComparisonPredicate):
-			return 1
+			return 2
 		if isinstance(predicate, predicates.CompoundPredicate):
-			return sum(self._priorityForPredicate(p) for p in predicate.subpredicates)
+			return 1 + sum(self._priorityForPredicate(p) for p in predicate.subpredicates)
 		if isinstance(predicate, predicates.ValuePredicate):
 			return 1
 		return 0
