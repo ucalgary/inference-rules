@@ -12,17 +12,17 @@ class RulePriorityTest(unittest.TestCase):
 	def testComparisonPredicatePriority(self):
 		predicate = Predicate.predicateWithFormat('key == True')
 		rule = Rule(predicate, 'key', self.trueValue)
-		self.assertEqual(rule.priority, 1)
+		self.assertEqual(rule.priority, 2)
 
 	def testCompoundPredicatePriority(self):
 		predicate = Predicate.predicateWithFormat('key == TRUE && key == FALSE')
 		rule = Rule(predicate, 'key', self.trueValue)
-		self.assertEqual(rule.priority, 2)
+		self.assertEqual(rule.priority, 5)
 
 	def testNestedCompoundPredicatePriority(self):
 		predicate = Predicate.predicateWithFormat('(key == TRUE && key == FALSE) || (key == FALSE)')
 		rule = Rule(predicate, 'key', self.trueValue)
-		self.assertEqual(rule.priority, 3)
+		self.assertEqual(rule.priority, 8)
 
 	def testValuePredicatePriority(self):
 		predicate = Predicate.predicateWithFormat('TRUEPREDICATE')
@@ -37,17 +37,17 @@ class WeightedRulePriorityTest(unittest.TestCase):
 	def testWeightedComparisonPredicatePriority(self):
 		predicate = Predicate.predicateWithFormat('key == True')
 		rule = Rule(predicate, 'key', self.trueValue, 1)
-		self.assertEqual(rule.priority, 1001)
+		self.assertEqual(rule.priority, 1002)
 
 	def testWeightedCompoundPredicatePriority(self):
 		predicate = Predicate.predicateWithFormat('key == TRUE && key == FALSE')
 		rule = Rule(predicate, 'key', self.trueValue, 2)
-		self.assertEqual(rule.priority, 2002)
+		self.assertEqual(rule.priority, 2005)
 
 	def testWeightedNestedCompoundPredicatePriority(self):
 		predicate = Predicate.predicateWithFormat('(key == TRUE && key == FALSE) || (key == FALSE)')
 		rule = Rule(predicate, 'key', self.trueValue, 3)
-		self.assertEqual(rule.priority, 3003)
+		self.assertEqual(rule.priority, 3008)
 
 	def testWeightedValuePredicatePriority(self):
 		predicate = Predicate.predicateWithFormat('TRUEPREDICATE')
