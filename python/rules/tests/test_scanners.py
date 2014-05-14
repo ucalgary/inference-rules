@@ -258,7 +258,8 @@ class ModelScannerTest(unittest.TestCase):
 		# Expecting 1 rule
 		# TRUEPREDICATE { key1: '1' }
 		scanner, model = self._testModelData('0001-simple-model.irl')
-		self.assertEqual(scanner.lineNumber, 3)
+		self.assertEqual(scanner.lineNumber, 4)
+		self.assertTrue(scanner.atEnd)
 		self.assertEqual(len(model.rules), 1)
 		
 		rule = model.rules[0]
@@ -273,7 +274,8 @@ class ModelScannerTest(unittest.TestCase):
 		# TRUEPREDICATE { key1: '1' }
 		# FALSEPREDICATE { key1: '1' }
 		scanner, model = self._testModelData('0002-two-specifiers.irl')
-		self.assertEqual(scanner.lineNumber, 3)
+		self.assertEqual(scanner.lineNumber, 4)
+		self.assertTrue(scanner.atEnd)
 		self.assertEqual(len(model.rules), 2)
 
 		rule = model.rules[0]
@@ -294,7 +296,8 @@ class ModelScannerTest(unittest.TestCase):
 		# TRUEPREDICATE { key1: '1' }
 		# TRUEPREDICATE AND FALSEPREDICATE { key2: '2' }
 		scanner, model = self._testModelData('0003-sub-ruleset.irl')
-		self.assertEqual(scanner.lineNumber, 7)
+		self.assertEqual(scanner.lineNumber, 8)
+		self.assertTrue(scanner.atEnd)
 		self.assertEqual(len(model.rules), 2)
 
 		rule = model.rules[0]
