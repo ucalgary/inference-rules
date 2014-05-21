@@ -1,8 +1,8 @@
-# X
+# Kevi
 
-X is a [business rule system](http://en.wikipedia.org/wiki/Business_rules_engine) that provides a consistent way to express business rules for use primarily in Python, Javascript, and .Net applications. Business rule systems help externalize operational decisions from application code so that application systems can more easily adapt to changing business conditions and applications can avoid having business logic mixed with functional code.
+Kevi is a [business rule system](http://en.wikipedia.org/wiki/Business_rules_engine) that provides a consistent way to express business rules for use primarily in Python, Javascript, and .Net applications. Business rule systems help externalize operational decisions from application code so that application systems can more easily adapt to changing business conditions and applications can avoid having business logic mixed with functional code.
 
-X is very heavily based on the [WebObjects DirectToWeb](https://developer.apple.com/legacy/library/documentation/WebObjects/Developing_With_D2W/) [rule system](https://developer.apple.com/legacy/library/documentation/WebObjects/Developing_With_D2W/Architecture/Architecture.html#//apple_ref/doc/uid/TP30001015-DontLinkChapterID_2-BAJDAABJ), with control semantics from Foundation and Core Data in Mac OS X and iOS, and syntax based on CSS with [LESS](http://lesscss.org/#-nested-rules) and [Saas](http://sass-lang.com/guide#3) style nesting.
+Kevi is very heavily based on the [WebObjects DirectToWeb](https://developer.apple.com/legacy/library/documentation/WebObjects/Developing_With_D2W/) [rule system](https://developer.apple.com/legacy/library/documentation/WebObjects/Developing_With_D2W/Architecture/Architecture.html#//apple_ref/doc/uid/TP30001015-DontLinkChapterID_2-BAJDAABJ), with control semantics from Foundation and Core Data in Mac OS X and iOS, and syntax based on CSS with [LESS](http://lesscss.org/#-nested-rules) and [Saas](http://sass-lang.com/guide#3) style nesting.
 
 ## Brief History
 
@@ -12,7 +12,7 @@ WebObjects became an Apple product when NeXT was acquired in 1997. It was largel
 
 ## Design
 
-X is meant to operate like the D2W Rule Engine, but with Core Data control classes replacing EOF classes, and syntax based on CSS. D2W rules provide key-value inferences. Simple key-value objects—such as a dictionary—contain pairs of keys and values that can be retrieved by keys. For example, the following dictionary contains information related to configuring a search results page.
+Kevi is meant to operate like the D2W Rule Engine, but with Core Data control classes replacing EOF classes, and syntax based on CSS. D2W rules provide key-value inferences. Simple key-value objects—such as a dictionary—contain pairs of keys and values that can be retrieved by keys. For example, the following dictionary contains information related to configuring a search results page.
 
 ```
 {
@@ -59,7 +59,7 @@ Predicate {
 
 ## Differences from Direct To Web
 
-The D2W Rule Engine used [EOQualifier](https://developer.apple.com/legacy/library/documentation/LegacyTechnologies/WebObjects/WebObjects_5/EOControlRef/Java/Classes/EOQualifier.html) and [Assignment](https://developer.apple.com/legacy/library/documentation/LegacyTechnologies/WebObjects/WebObjects_5/DirectToWebRef/Java/Classes/Assignment.html) classes to describe rules. X rules are based on [NSPredicate](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSPredicate_Class/Reference/NSPredicate.html) and [NSExpression](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSExpression_Class/Reference/NSExpression.html#//apple_ref/occ/cl/NSExpression) classes.
+The D2W Rule Engine used [EOQualifier](https://developer.apple.com/legacy/library/documentation/LegacyTechnologies/WebObjects/WebObjects_5/EOControlRef/Java/Classes/EOQualifier.html) and [Assignment](https://developer.apple.com/legacy/library/documentation/LegacyTechnologies/WebObjects/WebObjects_5/DirectToWebRef/Java/Classes/Assignment.html) classes to describe rules. Kevi rules are based on [NSPredicate](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSPredicate_Class/Reference/NSPredicate.html) and [NSExpression](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/Foundation/Classes/NSExpression_Class/Reference/NSExpression.html#//apple_ref/occ/cl/NSExpression) classes.
 
 ## Web Services
 
