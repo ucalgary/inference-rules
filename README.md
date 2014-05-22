@@ -13,3 +13,11 @@ Kevi is very heavily based on the [WebObjects DirectToWeb](https://developer.app
 * Objective-C
 * C#
 * PHP
+
+## Acknowledgements
+
+Portions based on [Capuccino](https://github.com/cappuccino/cappuccino). Copyright © 2013 - Cappuccino Project.
+
+Portions based on [GNUStep Base Library](https://github.com/gnustep/gnustep-base). Copyright © 2005 Free Software Foundation.
+
+
