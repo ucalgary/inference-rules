@@ -178,6 +178,26 @@ class Model(object):
 	def candidates(self, keyPath, context):
 		return self._buckets.get(keyPath)
 
+	def fireRuleForKeyPathInContext(self, keyPath, context):
+		candidates = self.candidates(keyPath, context)
+		if not candidates:
+			return null
+
+		for rule in candidates:
+			if rule.canFireInContext(context):
+				return rule.fire(context)
+
+		return None
+
+	def fireAllRulesForKeyPathInContext(self, keyPath, context):
+		candidates = self.candidates(keyPath, context)
+		if not candidates:
+			return null
+
+		candidates = filter(lambda rule: rule.canFireInContext(context), candidates)
+		
+		return map(lambda rule: rule.fire(context), candidates)
+
 	def __str__(self):
 		return '%s' % (
 			self.rules
