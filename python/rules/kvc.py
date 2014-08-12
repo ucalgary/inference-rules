@@ -8,8 +8,8 @@ def valueForKey(obj, key):
 
 	if isinstance(obj, (list, tuple)):
 		return map(lambda o: valueForKey(o, key), obj)
-		return obj[key]
 	elif isinstance(obj, collections.Mapping):
+		return obj.get(key)
 	else:
 		value = getattr(obj, key)
 		if callable(value):
