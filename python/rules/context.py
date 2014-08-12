@@ -22,19 +22,21 @@ class Context(collections.MutableMapping):
 		self.model.fireAllRulesForKeyPathInContext(key, self)
 
 	def __getitem__(self, key):
-		pass
+		if key in self._localValues:
+			return self._localValues[key]
+		return self.inferValueForKey(key)
 
 	def __setitem__(self, key, value):
-		pass
+		self._localValues[key] = value
 
 	def __delitem__(self, key):
-		pass
+		del self._localValues[key]
 
 	def __iter__(self):
-		pass
+		return iter(self._localValues)
 
 	def __len__(self):
-		pass
+		return len(self._localValues)
 
 	def __keytransform__(self, key):
-		pass
+		return key
