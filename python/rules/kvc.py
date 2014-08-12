@@ -1,13 +1,15 @@
 # coding=utf-8
 
+import collections
+
 def valueForKey(obj, key):
 	if not key:
 		return None
 
 	if isinstance(obj, (list, tuple)):
 		return map(lambda o: valueForKey(o, key), obj)
-	elif isinstance(obj, dict):
 		return obj[key]
+	elif isinstance(obj, collections.Mapping):
 	else:
 		value = getattr(obj, key)
 		if callable(value):

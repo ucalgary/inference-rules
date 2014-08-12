@@ -16,10 +16,10 @@ class Context(collections.MutableMapping):
 		return self._model
 
 	def inferValueForKey(self, key):
-		self.model.fireRuleForKeyPathInContext(key, self)
+		return self.model.fireRuleForKeyPathInContext(key, self)
 
 	def inferAllPossibleValuesForKey(self, key):
-		self.model.fireAllRulesForKeyPathInContext(key, self)
+		return self.model.fireAllRulesForKeyPathInContext(key, self)
 
 	def __getitem__(self, key):
 		if key in self._localValues:
