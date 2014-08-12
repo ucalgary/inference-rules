@@ -6,7 +6,7 @@ def valueForKey(obj, key):
 	if not key:
 		return None
 
-	if isinstance(obj, (list, tuple)):
+	if isinstance(obj, collections.Sequence) and not isinstance(obj, str):
 		return map(lambda o: valueForKey(o, key), obj)
 	elif isinstance(obj, collections.Mapping):
 		return obj.get(key)
