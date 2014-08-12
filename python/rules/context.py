@@ -2,7 +2,7 @@
 
 import collections
 
-from .model import DefaultModel
+from .rules import DefaultModel
 
 class Context(collections.MutableMapping):
 
