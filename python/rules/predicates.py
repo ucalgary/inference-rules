@@ -109,8 +109,9 @@ class Predicate(object):
 	def evaluateWithObject(self, obj):
 		return False
 
-		return False
 	def evaluateWithObjectAndSubstitutionVariables(self, obj, variables):
+		predicate = self.predicateWithSubstitutionVariables(self, variables)
+		return predicate.evaluateWithObject(obj)
 	
 	# Getting Representations
 
