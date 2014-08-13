@@ -97,7 +97,7 @@ class Predicate(object):
 		return CompoundPredicate(subpredicates, type=CompoundPredicateType.Or)
 
 	def predicateWithSubstitutionVariables(self, variables):
-		pass
+		raise NotImplementedError('Subclasses of Predicate should implement predicateWithSubstitutionVariables:')
 
 	# Initializing a Predicate
 
@@ -131,6 +131,11 @@ class ComparisonPredicate(Predicate):
 		self._rightExpression = rightExpression
 		self._operator = ComparisonPredicateOperator(type, modifier, options)
 	
+	def predicateWithSubstitutionVariables(self, variables):
+		leftExpression = self.leftExpression._expressionWithSubstitutionVariables(variables)
+		rightExpression = self.rightExpression._expressionWithSubstitutionVariables(variables)
+		return ComparisonPredicate(leftExpression, rightExpression, modifier=self.modifier, type=self.operatorType, options=self.options)
+
 	@property
 	def leftExpression(self):
 		return self._leftExpression
@@ -183,6 +188,10 @@ class CompoundPredicate(Predicate):
 		self._subpredicates = subpredicates
 		self._operator = CompoundPredicateOperator(type, 0, 0)
 
+	def predicateWithSubstitutionVariables(self, variables):
+		subpredicates = map(lambda p: p.predicateWithSubstitutionVariables(variables), self.subpredicates)
+		return CompoundPredicate(subpredicates, self.compoundPredicateType)
+
 	@property
 	def compoundPredicateType(self):
 		return self._operator.operatorType
@@ -213,6 +222,9 @@ class ValuePredicate(Predicate):
 
 	def __init__(self, value):
 		self._value = value
+
+	def predicateWithSubstitutionVariables(self, variables):
+		return ValuePredicate(self.value)
 
 	@property
 	def value(self):
