@@ -96,6 +96,9 @@ class Predicate(object):
 	def orPredicateWithSubpredicates(subpredicates):
 		return CompoundPredicate(subpredicates, type=CompoundPredicateType.Or)
 
+	def predicateWithSubstitutionVariables(self, variables):
+		pass
+
 	# Initializing a Predicate
 
 	def __init__(self):
