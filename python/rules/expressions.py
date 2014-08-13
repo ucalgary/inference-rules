@@ -118,6 +118,9 @@ class Expression(object):
 		from .scanners import ExpressionScanner
 		scanner = ExpressionScanner(format)
 		return scanner.parseExpression()
+
+	def _expressionWithSubstitutionVariables(self, variables):
+		raise NotImplementedError('Subclasses of Expression should implement _expressionWithSubstitutionVariables:')
 		
 	# Initializing an Expression
 
@@ -157,6 +160,9 @@ class ConstantValueExpression(Expression):
 
 		self._value = value
 
+	def _expressionWithSubstitutionVariables(self, variables):
+		return self
+
 	@property
 	def constantValue(self):
 		return self._value
@@ -182,6 +188,9 @@ class SelfExpression(Expression):
 	def __init__(self):
 		super(SelfExpression, self).__init__(ExpressionType.EvaluatedObject)
 
+	def _expressionWithSubstitutionVariables(self, variables):
+		return self
+
 	def expressionValueWithObject(self, object, context=None):
 		return object
 
@@ -202,6 +211,14 @@ class VariableExpression(Expression):
 		super(VariableExpression, self).__init__(ExpressionType.Variable)
 
 		self._variable = variable
+
+	def _expressionWithSubstitutionVariables(self, variables):
+		result = variables.get(self.variable, None)
+
+		if result != None:
+			return ConstantValueExpression(result)
+		else:
+			return self
 
 	@property
 	def variable(self):
@@ -229,6 +246,10 @@ class AggregateExpression(Expression):
 		super(AggregateExpression, self).__init__(ExpressionType.Aggregate)
 
 		self._collection = collection
+
+	def _expressionWithSubstitutionVariables(self, variables):
+		collection = map(lambda e: e._expressionWithSubstitutionVariables(variables), self.collection)
+		return AggregateExpression(collection)
 
 	@property
 	def collection(self):
@@ -263,6 +284,11 @@ class SetExpression(Expression):
 
 		self._leftExpression = leftExpression
 		self._rightExpression = rightExpression
+
+	def _expressionWithSubstitutionVariables(self, variables):
+		leftExpression = self.leftExpression._expressionWithSubstitutionVariables(variables)
+		rightExpression = self.rightExpression._expressionWithSubstitutionVariables(variables)
+		return SetExpression(self.expressionType, leftExpression, rightExpression)
 
 	@property
 	def leftExpression(self):
@@ -310,6 +336,10 @@ class FunctionExpression(Expression):
 		self._operand = operand
 		self._arguments = parameters
 		self._argc = len(parameters) if parameters is not None else 0
+
+	def _expressionWithSubstitutionVariables(self, variables):
+		arguments = map(lambda e: e.expressionValueWithObject(object, context=context), self.arguments)
+		return FunctionExpression(self.operand, self.function, self.arguments, self.expressionType)
 
 	@property
 	def function(self):
