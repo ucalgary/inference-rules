@@ -106,6 +106,8 @@ class Expression(object):
 	@staticmethod
 	def expressionForFunction(functionName, parameters=None):
 		if functionName == 'FUNCTION':
+			if len(parameters < 2):
+				raise ValueError('Insufficient parameters for custom function.')
 			operand = parameters[0]
 			functionName = parameters[1].expressionValueWithObject(None)
 			parameters = parameters[2:]
