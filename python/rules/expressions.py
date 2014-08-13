@@ -230,12 +230,12 @@ class VariableExpression(Expression):
 	# Getting Representations
 
 	def __str__(self):
-		return '%s' % (
+		return '$%s' % (
 			self.variable
 		)
 
 	def __repr__(self):
-		return '<%s> %s' % (
+		return '<%s> $%s' % (
 			self.__class__.__name__,
 			self.__str__()
 		)
