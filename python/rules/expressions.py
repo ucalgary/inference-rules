@@ -105,10 +105,15 @@ class Expression(object):
 
 	@staticmethod
 	def expressionForFunction(functionName, parameters=None):
-		if not functionName in _BuiltInFunctions:
-			raise ValueError('Function "%s" not found' % functionName)
-
-		operand = Expression.expressionForConstantValue(_BuiltInFunctions)
+		if functionName == 'FUNCTION':
+			operand = parameters[0]
+			functionName = parameters[1].expressionValueWithObject(None)
+			parameters = parameters[2:]
+		else:
+			if not functionName in _BuiltInFunctions:
+				raise ValueError('Function "%s" not found' % functionName)
+			operand = Expression.expressionForConstantValue(_BuiltInFunctions)
+		
 		return FunctionExpression(operand, functionName, parameters or [], ExpressionType.Function)
 
 	# Creating an Expression
