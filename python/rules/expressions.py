@@ -5,7 +5,7 @@ import datetime
 import math
 import random
 
-from . import kvc
+from . import kvc, pathutils
 
 _BuiltInFunctions = {
 	'sum:'             : __builtin__.sum,
@@ -232,7 +232,13 @@ class VariableExpression(Expression):
 		return self._variable
 
 	def expressionValueWithObject(self, object, context=None):
-		return None # return from the variable bindings dictionary the value for the key variable
+		# Special case: if the variable is _NSPathUtilities,
+		# return pathutils. Otherwise, return None because the
+		# variable has not been substituted with an actual value.
+		if self.variable == '_NSPathUtilities':
+			return pathutils
+
+		return None
 
 	# Getting Representations
 
