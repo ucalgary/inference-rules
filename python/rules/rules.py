@@ -125,8 +125,9 @@ class Rule(object):
 
 class Model(object):
 	
-	def __init__(self, rules=None):
+	def __init__(self, rules=None, variables=None):
 		self._rules = rules
+		self._variables = variables
 		self._buckets = {}
 		self._bucketsAreValid = False
 		self._sortRulesIntoBuckets()
