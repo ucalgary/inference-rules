@@ -163,8 +163,15 @@ class Model(object):
 	def _sortRulesIntoBuckets(self):
 		self._invalidateCaches()
 
+		# If a variables dictionary is specified, go through all the rule
+		# predicates substituting for variables
+		if self._variables != None:
+			rules = [rule._ruleWithSubstitutionVariables(self._variables) for rule in self.rules]
+		else:
+			rules = self.rules
+
 		# Group the rules by key, sorted by priority
-		for key, group in itertools.groupby(self.rules, key=lambda x: x.key):
+		for key, group in itertools.groupby(rules, key=lambda x: x.key):
 			if not key in self._buckets:
 				bucket = []
 				self._buckets[key] = bucket
