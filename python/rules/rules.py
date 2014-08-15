@@ -30,6 +30,13 @@ class Rule(object):
 
 		self._calculatePriority()
 
+	def _ruleWithSubstitutionVariables(self, variables):
+		if variables == None:
+			return self
+
+		specifier = self.specifier.predicateWithSubstitutionVariables(variables)
+		return Rule(specifier, self.key, self.value, weight=self.weight)
+
 	@property
 	def specifier(self):
 		return self._specifier
