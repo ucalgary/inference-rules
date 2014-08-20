@@ -7,7 +7,7 @@ class PathUtilsPathComponentTest(unittest.TestCase):
 	def _testFunctionWithData(self, f, data, exp=False):
 		for args, expectedResult in data:
 			result = f(*args) if exp else f(args)
-			self.assertEqual(result, expectedResult)
+			self.assertEqual(result, expectedResult, '%s != %s (%s)' % (repr(result), repr(expectedResult), args))
 
 	def testPathWithComponents(self):
 		data = (
