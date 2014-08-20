@@ -10,10 +10,12 @@ def pathWithComponents(components):
 	if len(components) == 0:
 		return ''
 
-	# Escape / in comments
-	components = [component.replace(pathSeparator, '\\') for component in components]
-
-	if components[0] == '\\' + pathSeparator:
+	# Eliminate runs of pathSeparator and empty components
+	components = [re.sub(pathSeparator + r'+', pathSeparator, component) for component in components if component != '']
+	# Eliminate components that are only a separator, past the first component
+	components[1:] = [component for component in components[1:] if component != pathSeparator]
+	# If the first component is just pathSeparator, replace it with an empty string
+	if components[0] == pathSeparator:
 		components[0] = ''
 
 	return pathSeparator.join(components)

@@ -16,6 +16,10 @@ class PathUtilsPathComponentTest(unittest.TestCase):
 			(['a', 'b', ''], 'a/b'),
 			(['/', 'a', 'b'], '/a/b'),
 			(['', 'a', 'b'], 'a/b'),
+			(['a', '/', 'b'], 'a/b'),
+			(['a', '//', 'b'], 'a/b'),
+			(['a', 'b/c'], 'a/b/c'),
+			(['a', 'b//c'], 'a/b/c'),
 			(None, None),
 			([], '')
 		)
