@@ -15,7 +15,9 @@ class PathUtilsPathComponentTest(unittest.TestCase):
 			(['a', 'b', '/'], 'a/b'),
 			(['a', 'b', ''], 'a/b'),
 			(['/', 'a', 'b'], '/a/b'),
-			(['', 'a', 'b'], 'a/b')
+			(['', 'a', 'b'], 'a/b'),
+			(None, None),
+			([], '')
 		)
 
 		self._testFunctionWithData(pathutils.pathWithComponents, data)
@@ -28,7 +30,9 @@ class PathUtilsPathComponentTest(unittest.TestCase):
 			('a//b/', ['a', 'b', '/']),
 			('/a/b', ['/', 'a', 'b']),
 			('//a/b', ['/', 'a', 'b']),
-			('a/b', ['a', 'b'])
+			('a/b', ['a', 'b']),
+			(None, None),
+			('', '')
 		)
 
 		self._testFunctionWithData(pathutils.pathComponents, data)
@@ -40,7 +44,9 @@ class PathUtilsPathComponentTest(unittest.TestCase):
 			('a/b/', 'b'),
 			('a/b//', 'b'),
 			('/', '/'),
-			('//', '/')
+			('//', '/'),
+			(None, None),
+			('', '')
 		)
 
 		self._testFunctionWithData(pathutils.lastPathComponent, data)
@@ -52,7 +58,9 @@ class PathUtilsPathComponentTest(unittest.TestCase):
 			('a/b/', 'a'),
 			('a/b//', 'a'),
 			('/', '/'),
-			('//', '/')
+			('//', '/'),
+			(None, None),
+			('', '')
 		)
 
 		self._testFunctionWithData(pathutils.deleteLastPathComponent, data)
@@ -65,7 +73,13 @@ class PathUtilsPathComponentTest(unittest.TestCase):
 			(('a/b', '/c'), 'a/b/c'),
 			(('a/b', '//c'), 'a/b/c'),
 			(('a/b//', '/c'), 'a/b/c')
-			(('a/b//', 'c'), 'a/b/c')
+			(('a/b//', 'c'), 'a/b/c'),
+			((None, None), None),
+			((None, 'a'), 'a'),
+			(('a', None), 'a'),
+			(('', ''), ''),
+			((None, ''), ''),
+			(('', None), '')
 		)
 
 		self._testFunctionWithData(pathutils.appendPathComponent, data, exp=True)
