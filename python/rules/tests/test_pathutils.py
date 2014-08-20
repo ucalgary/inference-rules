@@ -30,13 +30,15 @@ class PathUtilsPathComponentTest(unittest.TestCase):
 		data = (
 			('a/b/c', ['a', 'b', 'c']),
 			('a/b/', ['a', 'b', '/']),
+			('a/b/ ', ['a', 'b', ' ']),
 			('a/b//', ['a', 'b', '/']),
 			('a//b/', ['a', 'b', '/']),
 			('/a/b', ['/', 'a', 'b']),
 			('//a/b', ['/', 'a', 'b']),
 			('a/b', ['a', 'b']),
+			('a\\/b', ['a\\', 'b']),
 			(None, None),
-			('', '')
+			('', [])
 		)
 
 		self._testFunctionWithData(pathutils.pathComponents, data)

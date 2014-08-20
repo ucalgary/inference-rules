@@ -26,22 +26,15 @@ def pathComponents(path):
 	if len(path) == 0:
 		return []
 
-	# Temporarily replace escaped / with a back slash
-	path = path.replace('\\\\' + pathSeparator, '\\')
-
-	lastSeparatorIndex = path.rfind(pathSeparator)
-	lastIndex = len(path) - 1
-
-	if lastSeparatorIndex is lastIndex:
-		path = path[0:lastIndex - 1]
-
+	# Collapse runs of / to a single /
+	path = re.sub(r'/+', pathSeparator, path)
+	# Split into components by path separator
 	pathComponents = path.split(pathSeparator)
-
-	if pathComponents[0] is '':
+	# Replace empty strings at the beginning and end with path separator
+	if pathComponents[0] == '':
 		pathComponents[0] = pathSeparator
-
-	# Replace back slashes with /
-	pathComponents = [component.replace('\\\\', pathSeparator) for component in pathComponents]
+	if pathComponents[-1] == '':
+		pathComponents[-1] = pathSeparator
 
 	return pathComponents
 
