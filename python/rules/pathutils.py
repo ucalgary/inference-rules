@@ -73,9 +73,14 @@ def deleteLastPathComponent(path):
 	if len(path) == 0:
 		return ''
 
+	# Collapse runs of / to a single /
+	path = re.sub(r'/+', pathSeparator, path)
+
+	# If path is just /, return it
+	if path == '/':
+		return path
+
 	separatorIndex = path.rfind(pathSeparator)
-	while separatorIndex != -1 and path[separatorIndex - 1] == '\\':
-		separatorIndex = path.rfind(pathSeparator, 0, separatorIndex - 1)
 	firstSeparatorIndex = 0
 	lastIndex = len(path) - 1
 
