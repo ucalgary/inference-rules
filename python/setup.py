@@ -6,8 +6,8 @@ import sys
 
 from setuptools import setup, find_packages
 
-if not hasattr(sys, 'version_info') or sys.version_info < (2, 7, 0, 'final'):
-	sys.exit('rules requires Python 2.7 or later.')
+if not hasattr(sys, 'version_info') or sys.version_info < (2, 6, 0, 'final'):
+	sys.exit('rules requires Python 2.6 or later.')
 
 setup(
 	name = 'rules',
