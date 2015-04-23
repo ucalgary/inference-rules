@@ -43,7 +43,7 @@ class ComparisonPredicateOperator(PredicateOperator):
 		predicates.ComparisonPredicateType.EndsWith           : lambda l, r: l.endwith(r),
 		predicates.ComparisonPredicateType.In                 : lambda l, r: l in r,
 		predicates.ComparisonPredicateType.CustomSelector     : None, # not supported yet
-		predicates.ComparisonPredicateType.Contains           : lambda l, r: r in l, # l contains r, l must be a collection
+		predicates.ComparisonPredicateType.Contains           : lambda l, r: r in l if l else False, # l contains r, l must be a collection
 		predicates.ComparisonPredicateType.Between            : lambda l, r: r[0] < l < r[1]
 	}
 
