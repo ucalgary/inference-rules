@@ -540,6 +540,13 @@ class ModelScanner(PredicateScanner):
 		if not specifiers:
 			raise ValueError('Expected specifier')
 
+		# Process the scanned specifiers. If there are parent specifiers,
+		# the local specifiers should be compounded with each parent
+		# specifier with an AND.
+		if parent_specifiers:
+			specifiers = [' AND '.join(str(s) for s in spec) \
+				for spec in itertools.product(parent_specifiers, specifiers)]
+
 		# Expecting opening {
 		if not self.scanString('{'):
 			raise ValueError('Expected { after specifiers: %s' % specifiers)
@@ -565,13 +572,6 @@ class ModelScanner(PredicateScanner):
 		# Expecting closing }
 		if not self.scanString('}'):
 			raise ValueError('Expected to find }')
-
-		# Process the scanned specifiers. If there are parent specifiers,
-		# the local specifiers should be compounded with each parent
-		# specifier with an AND.
-		if parent_specifiers:
-			specifiers = [' AND '.join(str(s) for s in spec) \
-				for spec in itertools.product(parent_specifiers, specifiers)]
 
 		# For each specifier and declaration, create a rule
 		rules = [Rule(Predicate.predicateWithFormat(spec), decl[0], decl[1]) \
