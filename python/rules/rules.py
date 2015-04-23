@@ -196,7 +196,7 @@ class Model(object):
 	def fireRuleForKeyPathInContext(self, keyPath, context):
 		candidates = self.candidates(keyPath, context)
 		if not candidates:
-			return null
+			return None
 
 		for rule in candidates:
 			if rule.canFireInContext(context):
