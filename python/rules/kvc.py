@@ -11,6 +11,8 @@ def valueForKey(obj, key):
 	elif isinstance(obj, collections.Mapping):
 		return obj.get(key)
 	else:
+		if not hasattr(obj, key):
+			return None
 		value = getattr(obj, key)
 		if callable(value):
 			value = value()
