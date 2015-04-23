@@ -39,9 +39,9 @@ class ComparisonPredicateOperator(PredicateOperator):
 		predicates.ComparisonPredicateType.NotEqualTo         : lambda l, r: l != r,
 		predicates.ComparisonPredicateType.Matches            : lambda l, r: re.match(r, l) != None,
 		predicates.ComparisonPredicateType.Like               : None, # subset of MATCHES, similar to SQL like
-		predicates.ComparisonPredicateType.BeginsWith         : lambda l, r: l.startswith(r),
-		predicates.ComparisonPredicateType.EndsWith           : lambda l, r: l.endwith(r),
-		predicates.ComparisonPredicateType.In                 : lambda l, r: l in r,
+		predicates.ComparisonPredicateType.BeginsWith         : lambda l, r: l.startswith(r) if l else False,
+		predicates.ComparisonPredicateType.EndsWith           : lambda l, r: l.endwith(r) if l else False,
+		predicates.ComparisonPredicateType.In                 : lambda l, r: l in r if r else False,
 		predicates.ComparisonPredicateType.CustomSelector     : None, # not supported yet
 		predicates.ComparisonPredicateType.Contains           : lambda l, r: r in l if l else False, # l contains r, l must be a collection
 		predicates.ComparisonPredicateType.Between            : lambda l, r: r[0] < l < r[1]
