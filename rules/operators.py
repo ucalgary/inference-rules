@@ -1,6 +1,6 @@
 # coding=utf-8
 
-import __builtin__
+import builtins
 import re
 
 from . import predicates
@@ -57,14 +57,14 @@ class CompoundPredicateOperator(PredicateOperator):
 
 	_operatorFunctionsByType = {
 		predicates.CompoundPredicateType.Not: lambda p: not p[0],
-		predicates.CompoundPredicateType.And: getattr(__builtin__, 'all'),
-		predicates.CompoundPredicateType.Or:  getattr(__builtin__, 'any')
+		predicates.CompoundPredicateType.And: getattr(builtins, 'all'),
+		predicates.CompoundPredicateType.Or:  getattr(builtins, 'any')
 	}
 
 	def evaluatePredicatesWithObject(self, predicates, obj, substitutions=None):
 		# assert self._compoundPredicateType in (CompoundPredicateType.And, CompoundPredicateType.Or), 'compoundPredicateType is not Not, and is neither And or Or'
 
 		operatorFunction = self.operatorFunction()
-		evaluatedPredicates = map(lambda p: p.evaluateWithObject(obj), predicates)
+		evaluatedPredicates = [p.evaluateWithObject(obj) for p in predicates]
 
 		return operatorFunction(evaluatedPredicates)
