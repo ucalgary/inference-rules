@@ -6,12 +6,12 @@ import sys
 
 from setuptools import setup, find_packages
 
-if not hasattr(sys, 'version_info') or sys.version_info < (2, 6, 0, 'final'):
-	sys.exit('rules requires Python 2.6 or later.')
+if not hasattr(sys, 'version_info') or sys.version_info < (3, 0, 0, 'final'):
+	sys.exit('kevi requires Python 2.6 or later.')
 
 setup(
-	name = 'rules',
-	version = '0.1',
+	name = 'kevi',
+	version = '0.2',
 
 	author = 'King Chung Huang',
 	author_email = 'kchuang@ucalgary.ca',
