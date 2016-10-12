@@ -4,16 +4,6 @@ Kevi is a [business rule system](http://en.wikipedia.org/wiki/Business_rules_eng
 
 Kevi is very heavily based on the [WebObjects DirectToWeb](https://developer.apple.com/legacy/library/documentation/WebObjects/Developing_With_D2W/) [rule system](https://developer.apple.com/legacy/library/documentation/WebObjects/Developing_With_D2W/Architecture/Architecture.html#//apple_ref/doc/uid/TP30001015-DontLinkChapterID_2-BAJDAABJ), with control semantics from Foundation and Core Data in Mac OS X and iOS, and syntax based on CSS with [LESS](http://lesscss.org/#-nested-rules) and [Saas](http://sass-lang.com/guide#3) style nesting. See [wiki/Influences](wiki/Influences) for more information about design influences on Kevi.
 
-## Web Services
-
-## Clients
-
-* Python
-* Coffescript (Javascript)
-* Objective-C
-* C#
-* PHP
-
 ## Acknowledgements
 
 Portions based on [Capuccino](https://github.com/cappuccino/cappuccino). Copyright © 2013 - Cappuccino Project.
