@@ -249,6 +249,7 @@ class ModelScannerTest(unittest.TestCase):
 
 	def _testModelData(self, data_name):
 		data = pkg_resources.resource_string('rules.tests.data', data_name)
+		data = data.decode('utf-8')
 		scanner = ModelScanner(data)
 		model = scanner.parseModel()
 

@@ -189,7 +189,7 @@ class CompoundPredicate(Predicate):
 		self._operator = CompoundPredicateOperator(type, 0, 0)
 
 	def predicateWithSubstitutionVariables(self, variables):
-		subpredicates = map(lambda p: p.predicateWithSubstitutionVariables(variables), self.subpredicates)
+		subpredicates = [p.predicateWithSubstitutionVariables(variables) for p in self.subpredicates]
 		return CompoundPredicate(subpredicates, self.compoundPredicateType)
 
 	@property

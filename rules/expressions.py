@@ -1,6 +1,6 @@
 # coding=utf-8
 
-import __builtin__
+import builtins
 import datetime
 import math
 import random
@@ -8,28 +8,28 @@ import random
 from . import kvc, pathutils
 
 _BuiltInFunctions = {
-	'sum:'             : __builtin__.sum,
-	'count:'           : __builtin__.len,
-	'min:'             : __builtin__.min,
-	'max:'             : __builtin__.max,
+	'sum:'             : builtins.sum,
+	'count:'           : builtins.len,
+	'min:'             : builtins.min,
+	'max:'             : builtins.max,
 	'average:'         : lambda params: sum(params) / len(params),
 	'first:'           : lambda params: params[0],
 	'last:'            : lambda params: params[-1],
 	'fromObject:index:': lambda object, index: object[index],
-	'add:to:'          : lambda (n, m): n + m,
-	'from:subtract:'   : lambda (n, m): n - m,
-	'multiply:by:'     : lambda (n, m): n * m,
-	'divide:by:'       : lambda (n, m): n / m,
-	'sqrt:'            : lambda (num,): math.sqrt(num),
-	'raise:toPower:'   : lambda (n, m): math.pow(n, m),
-	'abs:'             : lambda (num,): math.fabs(num),
+	'add:to:'          : lambda n_m: n_m[0] + n_m[1],
+	'from:subtract:'   : lambda n_m1: n_m1[0] - n_m1[1],
+	'multiply:by:'     : lambda n_m2: n_m2[0] * n_m2[1],
+	'divide:by:'       : lambda n_m3: n_m3[0] / n_m3[1],
+	'sqrt:'            : lambda num4: math.sqrt(num4[0]),
+	'raise:toPower:'   : lambda n_m5: math.pow(n_m5[0], n_m5[1]),
+	'abs:'             : lambda num6: math.fabs(num6[0]),
 	'now'              : lambda _: datetime.datetime.now,
-	'ln:'              : lambda (num,): math.log10(num),
-	'exp:'             : lambda (num,): math.exp(num),
-	'ceiling:'         : lambda (num,): math.ceil(num),
-	'random:'          : lambda (num,): random.randint(0, num),
-	'modulus:by:'      : lambda (n, m): n % m,
-	'chs'              : lambda (num,): -num,
+	'ln:'              : lambda num7: math.log10(num7[0]),
+	'exp:'             : lambda num8: math.exp(num8[0]),
+	'ceiling:'         : lambda num9: math.ceil(num9[0]),
+	'random:'          : lambda num10: random.randint(0, num10[0]),
+	'modulus:by:'      : lambda n_m11: n_m11[0] % n_m11[1],
+	'chs'              : lambda num12: -num12[0],
 
 	'valueForKeyPath:' : lambda object, keyPath: kvc.valueForKeyPath(object, keyPath)
 }
@@ -261,7 +261,7 @@ class AggregateExpression(Expression):
 		self._collection = collection
 
 	def _expressionWithSubstitutionVariables(self, variables):
-		collection = map(lambda e: e._expressionWithSubstitutionVariables(variables), self.collection)
+		collection = [e._expressionWithSubstitutionVariables(variables) for e in self.collection]
 		return AggregateExpression(collection)
 
 	@property
@@ -269,7 +269,7 @@ class AggregateExpression(Expression):
 		return self._collection
 
 	def expressionValueWithObject(self, object, context=None):
-		return map(lambda e: e.expressionValueWithObject(object, context=context), self.collection)
+		return [e.expressionValueWithObject(object, context=context) for e in self.collection]
 
 	# Getting Representations
 
@@ -351,7 +351,7 @@ class FunctionExpression(Expression):
 		self._argc = len(parameters) if parameters is not None else 0
 
 	def _expressionWithSubstitutionVariables(self, variables):
-		arguments = map(lambda e: e.expressionValueWithObject(object, context=context), self.arguments)
+		arguments = [e.expressionValueWithObject(object, context=context) for e in self.arguments]
 		return FunctionExpression(self.operand, self.function, self.arguments, self.expressionType)
 
 	@property
@@ -369,13 +369,13 @@ class FunctionExpression(Expression):
 	def expressionValueWithObject(self, object, context=None):
 		target = self.operand.expressionValueWithObject(object, context=context)
 		target_function = target[self.function] if isinstance(target, dict) else getattr(target, self.function)
-		arguments = map(lambda arg: arg.expressionValueWithObject(object, context=context), self.arguments)
+		arguments = [arg.expressionValueWithObject(object, context=context) for arg in self.arguments]
 
 		return target_function(*arguments)
 
 	def _expressionWithSubstitutionVariables(self, variables):
 		operand = self.operand._expressionWithSubstitutionVariables(variables)
-		arguments = map(lambda arg: arg._expressionWithSubstitutionVariables(variables), self.arguments)
+		arguments = [arg._expressionWithSubstitutionVariables(variables) for arg in self.arguments]
 
 		return expressionForFunction(operand, self.function, arguments)
 

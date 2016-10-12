@@ -165,12 +165,12 @@ class Scanner(object):
 		return f
 
 	def scanFloat(self):
-		import __builtin__
-		return self.scanWithParseFunction(__builtin__.float)
+		import builtins
+		return self.scanWithParseFunction(builtins.float)
 
 	def scanInt(self):
-		import __builtin__
-		return self.scanWithParseFunction(__builtin__.int)
+		import builtins
+		return self.scanWithParseFunction(builtins.int)
 
 	def isAtEnd(self):
 		location = self.scanLocation
@@ -397,7 +397,7 @@ class PredicateScanner(ExpressionScanner):
 
 		# Does the next character still belong to the token?
 		c = self.string[self.scanLocation]
-		if not (c in string.letters or c in string.digits):
+		if not (c in string.ascii_letters or c in string.digits):
 			return True
 
 		# Back up, no match

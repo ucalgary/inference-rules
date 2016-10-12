@@ -83,7 +83,7 @@ class ExpressionsBasicCreationAndEvaluationTest(unittest.TestCase):
 	# Function
 
 	def testFunction(self):
-		numbers = range(1,4)
+		numbers = list(range(1,4))
 		numbersExpression = Expression.expressionForConstantValue(numbers)
 		expression = Expression.expressionForFunction('sum:', parameters=[numbersExpression])
 		evaluatedValue = expression.expressionValueWithObject(self.object)

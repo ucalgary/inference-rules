@@ -7,14 +7,14 @@ def valueForKey(obj, key):
 		return None
 
 	if isinstance(obj, collections.Sequence) and not isinstance(obj, str):
-		return map(lambda o: valueForKey(o, key), obj)
+		return [valueForKey(o, key) for o in obj]
 	elif isinstance(obj, collections.Mapping):
 		return obj.get(key)
 	else:
 		if not hasattr(obj, key):
 			return None
 		value = getattr(obj, key)
-		if callable(value):
+		if isinstance(value, collections.Callable):
 			value = value()
 		return value
 

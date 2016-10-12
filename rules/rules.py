@@ -2,7 +2,7 @@
 
 import bisect
 import itertools
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 from . import expressions, predicates
 
@@ -141,7 +141,7 @@ class Model(object):
 
 	@staticmethod
 	def modelFromURL(url):
-		f = urllib2.urlopen(url)
+		f = urllib.request.urlopen(url)
 		return Model._modelFromFileObj(f)
 
 	@staticmethod
@@ -182,13 +182,13 @@ class Model(object):
 				bisect.insort_left(bucket, rule)
 
 		# Reverse the order of the buckets, so most specific specifiers are first
-		[bucket.reverse() for bucket in self._buckets.values()]
+		[bucket.reverse() for bucket in list(self._buckets.values())]
 
 		self._bucketsAreValid = True
 
 	@property
 	def inferrableKeys(self):
-		return self._buckets.keys()
+		return list(self._buckets.keys())
 
 	def candidates(self, keyPath, context):
 		return self._buckets.get(keyPath)
@@ -209,9 +209,9 @@ class Model(object):
 		if not candidates:
 			return null
 
-		candidates = filter(lambda rule: rule.canFireInContext(context), candidates)
+		candidates = [rule for rule in candidates if rule.canFireInContext(context)]
 		
-		return map(lambda rule: rule.fire(context), candidates)
+		return [rule.fire(context) for rule in candidates]
 
 	def __str__(self):
 		return '%s' % (
