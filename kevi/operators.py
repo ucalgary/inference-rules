@@ -65,6 +65,5 @@ class CompoundPredicateOperator(PredicateOperator):
 		# assert self._compoundPredicateType in (CompoundPredicateType.And, CompoundPredicateType.Or), 'compoundPredicateType is not Not, and is neither And or Or'
 
 		operatorFunction = self.operatorFunction()
-		evaluatedPredicates = [p.evaluateWithObject(obj) for p in predicates]
 
-		return operatorFunction(evaluatedPredicates)
+		return operatorFunction(p.evaluateWithObject(obj) for p in predicates)
