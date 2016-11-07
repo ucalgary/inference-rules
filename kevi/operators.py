@@ -56,7 +56,7 @@ class ComparisonPredicateOperator(PredicateOperator):
 class CompoundPredicateOperator(PredicateOperator):
 
 	_operatorFunctionsByType = {
-		predicates.CompoundPredicateType.Not: lambda p: not p[0],
+		predicates.CompoundPredicateType.Not: lambda p: not next(p),
 		predicates.CompoundPredicateType.And: getattr(builtins, 'all'),
 		predicates.CompoundPredicateType.Or:  getattr(builtins, 'any')
 	}
