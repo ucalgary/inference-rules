@@ -14,6 +14,7 @@ _BuiltInFunctions = {
 	'max:'             : builtins.max,
 	'average:'         : lambda params: sum(params) / len(params),
 	'first:'           : lambda params: params[0],
+	'_index'           : lambda obj, index: obj[int(index)],
 	'last:'            : lambda params: params[-1],
 	'fromObject:index:': lambda object, index: object[index],
 	'add:to:'          : lambda n_m: n_m[0] + n_m[1],
